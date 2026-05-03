@@ -43,10 +43,10 @@ export default function Navbar() {
             onClick={handleLogoClick}
             className="flex items-center gap-3 group cursor-pointer"
           >
-            <img src="/logo.png" alt="Lumina" className="h-8 w-8 rounded-md" />
+            <img src="/logo.png" alt="Lumina Blog Logo" className="h-8 w-8 rounded-md" width={32} height={32} />
             <span className="text-lg font-black tracking-tight hidden sm:inline">
               <span className="text-[#f97316] text-glow-orange">Lum</span>
-              <span className="text-white/80">ina</span>
+              <span className="text-white/80">ina Blog</span>
             </span>
           </button>
 
@@ -182,7 +182,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile: right side icons + hamburger */}
-          <div className="flex md:hidden items-center gap-1">
+          <div className="flex md:hidden items-center gap-0.5">
             {/* Search icon for mobile */}
             <button
               onClick={() => setShowSearchOverlay(true)}

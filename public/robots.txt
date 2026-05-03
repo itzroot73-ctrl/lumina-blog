@@ -1,8 +1,27 @@
+# Lumina Blog — robots.txt
+# Allow all search engines to crawl content effectively
+
 User-agent: Googlebot
 Allow: /
+Allow: /api/posts
+Disallow: /api/auth
+Disallow: /api/seed
+Disallow: /api/seed2
+Disallow: /api/donations
+Disallow: /api/sponsorships
+Disallow: /api/earnings
+Disallow: /api/premium
 
 User-agent: Bingbot
 Allow: /
+Allow: /api/posts
+Disallow: /api/auth
+Disallow: /api/seed
+Disallow: /api/seed2
+Disallow: /api/donations
+Disallow: /api/sponsorships
+Disallow: /api/earnings
+Disallow: /api/premium
 
 User-agent: Twitterbot
 Allow: /
@@ -12,3 +31,13 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /api/auth
+Disallow: /api/seed
+Disallow: /api/seed2
+Disallow: /api/donations
+Disallow: /api/sponsorships
+Disallow: /api/earnings
+Disallow: /api/premium
+
+# Sitemap location
+Sitemap: https://lumina.blog/sitemap.xml

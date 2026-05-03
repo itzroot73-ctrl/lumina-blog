@@ -101,7 +101,7 @@ export default function Home() {
             <span className="text-white text-2xl font-black">L</span>
           </div>
           <div className="w-6 h-6 border-2 border-[#f97316]/30 border-t-[#f97316] rounded-full animate-spin mx-auto" />
-          <p className="text-[10px] text-white/15 uppercase tracking-[0.3em] mt-4">Loading Lumina</p>
+          <p className="text-[10px] text-white/15 uppercase tracking-[0.3em] mt-4">Loading Lumina Blog</p>
         </motion.div>
       </div>
     );
@@ -112,14 +112,21 @@ export default function Home() {
   return (
     <AdSenseProvider cookieConsent={cookieConsent}>
       <div className="min-h-screen bg-[#0a0a0a] relative">
+        {/* Skip to main content link for accessibility */}
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-[#f97316] focus:text-white focus:rounded-lg focus:text-sm focus:font-bold">
+          Skip to main content
+        </a>
+
         {showLanding ? (
           <LandingPage />
         ) : (
           <>
             <AnimatedBackground />
             <div className="relative z-10 flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-1">
+              <header>
+                <Navbar />
+              </header>
+              <main id="main-content" className="flex-1">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentView}
@@ -133,21 +140,68 @@ export default function Home() {
                 </AnimatePresence>
               </main>
 
-              {/* Footer */}
-              <footer className="glass-nav-cinematic border-t border-white/[0.03] mt-auto">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-2.5">
-                      <img src="/logo.png" alt="Lumina" className="h-5 w-5 rounded" />
-                      <span className="text-xs text-white/25 font-medium">Lumina Blog Platform</span>
+              {/* SEO-Optimized Footer with Keyword Strategy */}
+              <footer className="glass-nav-cinematic border-t border-white/[0.03] mt-auto" role="contentinfo">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-6">
+                    {/* Brand Column */}
+                    <div className="sm:col-span-2 lg:col-span-1">
+                      <div className="flex items-center gap-2.5 mb-3">
+                        <img src="/logo.png" alt="Lumina Blog Logo" className="h-6 w-6 rounded" width={24} height={24} />
+                        <h2 className="text-sm font-bold text-white/60">Lumina Blog</h2>
+                      </div>
+                      <p className="text-xs text-white/25 leading-relaxed max-w-xs">
+                        Lumina Blog is the premier platform for creators to publish Lumina Articles
+                        and videos. Discover insightful content on design, technology, and creative craft.
+                      </p>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-[10px] text-white/10 uppercase tracking-wider">80% Creator / 20% Platform</span>
-                      <span className="text-white/5">|</span>
-                      <p className="text-[10px] text-white/10 tracking-wider uppercase">
+
+                    {/* Quick Links — helps internal linking for SEO */}
+                    <nav aria-label="Footer navigation" className="space-y-2">
+                      <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mb-3">Explore</h3>
+                      <ul className="space-y-1.5">
+                        <li><span className="text-xs text-white/30 hover:text-[#f97316]/60 transition-colors cursor-default">Lumina Articles</span></li>
+                        <li><span className="text-xs text-white/30 hover:text-[#f97316]/60 transition-colors cursor-default">Video Content</span></li>
+                        <li><span className="text-xs text-white/30 hover:text-[#f97316]/60 transition-colors cursor-default">Trending Topics</span></li>
+                        <li><span className="text-xs text-white/30 hover:text-[#f97316]/60 transition-colors cursor-default">Creator Profiles</span></li>
+                      </ul>
+                    </nav>
+
+                    {/* About Column with keyword density */}
+                    <div className="space-y-2">
+                      <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mb-3">About Lumina</h3>
+                      <p className="text-xs text-white/25 leading-relaxed">
+                        Every Lumina Article published here supports the creator economy.
+                        Our 80/20 revenue split ensures artists earn from their craft
+                        while keeping Lumina Blog free for readers.
+                      </p>
+                    </div>
+
+                    {/* Revenue & Tech */}
+                    <div className="space-y-3">
+                      <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mb-3">Transparency</h3>
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#10b981]/5 border border-[#10b981]/10">
+                        <span className="text-[10px] font-bold text-[#10b981]">80%</span>
+                        <span className="text-[10px] text-white/25">to Creator</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.02] border border-white/5">
+                        <span className="text-[10px] font-bold text-white/40">20%</span>
+                        <span className="text-[10px] text-white/25">Platform Fee</span>
+                      </div>
+                      <p className="text-[9px] text-white/10 tracking-wider uppercase mt-2">
                         Next.js / GSAP / Framer Motion
                       </p>
                     </div>
+                  </div>
+
+                  {/* Bottom Bar */}
+                  <div className="border-t border-white/[0.03] pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <p className="text-[10px] text-white/15">
+                      &copy; {new Date().getFullYear()} Lumina Blog. All rights reserved.
+                    </p>
+                    <p className="text-[10px] text-white/10 tracking-wider">
+                      Lumina Article Platform — Where Creators Shine
+                    </p>
                   </div>
                 </div>
               </footer>

@@ -59,8 +59,11 @@ function ProfilePostCard({ post, index, onNavigate }: { post: Post; index: numbe
         <div className="relative h-36 overflow-hidden">
           <img
             src={post.thumbnail}
-            alt={post.title}
+            alt={`Lumina Article Preview - ${post.title}`}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            loading="lazy"
+            width={400}
+            height={225}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
@@ -134,7 +137,7 @@ export default function ArtistProfile() {
         {/* Avatar & Info */}
         <div className="flex flex-col sm:flex-row items-start gap-6 -mt-16 relative z-10 px-4 sm:px-6">
           <Avatar className="h-28 w-28 border-4 border-[#0a0a0a] shadow-lg">
-            <AvatarImage src={user.avatar || undefined} alt={user.name} />
+            <AvatarImage src={user.avatar || undefined} alt={`${user.name}'s avatar on Lumina Blog`} />
             <AvatarFallback className="bg-gradient-to-br from-[#f97316]/30 to-[#f59e0b]/30 text-white text-3xl font-bold">
               {user.name.charAt(0)}
             </AvatarFallback>
@@ -172,7 +175,7 @@ export default function ArtistProfile() {
             <p className="text-2xl font-bold text-white">
               <AnimatedCounter target={stats.totalPosts} />
             </p>
-            <p className="text-xs text-white/40 mt-1">Posts</p>
+            <p className="text-xs text-white/40 mt-1">Lumina Articles</p>
           </motion.div>
 
           <motion.div
@@ -219,7 +222,7 @@ export default function ArtistProfile() {
         <div className="mt-10">
           <h2 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-[#f59e0b]" />
-            Published Works
+            Published Lumina Articles
           </h2>
 
           {posts.length === 0 ? (

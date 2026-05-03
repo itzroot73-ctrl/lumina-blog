@@ -12,14 +12,14 @@ if (typeof window !== 'undefined') {
 }
 
 const FEATURES = [
-  { icon: PenSquare, label: 'Create & Publish', desc: 'Share your stories with the world through articles and videos' },
-  { icon: BookOpen, label: 'Discover Content', desc: 'Explore curated content from top creators across every genre' },
-  { icon: Shield, label: 'Support Artists', desc: '80% of your donation goes directly to the creator you love' },
+  { icon: PenSquare, label: 'Create & Publish', desc: 'Share your Lumina Articles and videos with the world. Our editor supports rich content with markdown and multimedia.' },
+  { icon: BookOpen, label: 'Discover Lumina Articles', desc: 'Explore curated Lumina Articles and video content from top creators across every genre and creative discipline.' },
+  { icon: Shield, label: 'Support Artists', desc: '80% of your donation goes directly to the creator you love. Lumina Blog ensures fair compensation for every article.' },
 ];
 
 const STATS = [
   { value: '10,000+', label: 'Active Creators' },
-  { value: '50K+', label: 'Stories Published' },
+  { value: '50K+', label: 'Lumina Articles Published' },
   { value: '$2.4M', label: 'Creator Earnings' },
 ];
 
@@ -73,7 +73,7 @@ function LiquidCTAButton({ onClick }: { onClick: () => void }) {
   return (
     <div className="relative">
       {/* SVG Filter for liquid metal effect */}
-      <svg className="absolute w-0 h-0">
+      <svg className="absolute w-0 h-0" aria-hidden="true">
         <defs>
           <filter id="liquid-metal">
             <feTurbulence
@@ -115,6 +115,7 @@ function LiquidCTAButton({ onClick }: { onClick: () => void }) {
           boxShadow: '0 0 60px rgba(249,115,22,0.5), 0 0 120px rgba(249,115,22,0.2), 0 12px 40px rgba(0,0,0,0.5)',
         }}
         whileTap={{ scale: 0.97 }}
+        aria-label="Enter the Lumina Blog platform"
       >
         {/* Inner glow layer */}
         <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[#fb923c] to-[#f97316] opacity-0 group-hover:opacity-40 transition-opacity duration-700" />
@@ -131,7 +132,7 @@ function LiquidCTAButton({ onClick }: { onClick: () => void }) {
         />
 
         <span className="relative flex items-center gap-2 sm:gap-3">
-          <span className="tracking-[0.15em] sm:tracking-[0.2em] uppercase text-xs sm:text-sm font-black">Enter the Lumina</span>
+          <span className="tracking-[0.15em] sm:tracking-[0.2em] uppercase text-xs sm:text-sm font-black">Enter Lumina</span>
           <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-2 transition-transform duration-300" />
         </span>
       </motion.button>
@@ -166,7 +167,7 @@ export default function LandingPage() {
 
     const ctx = gsap.context(() => {
       // Stats counter animation
-      gsap.fromTo('.stat-item', 
+      gsap.fromTo('.stat-item',
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, scrollTrigger: {
           trigger: '.stats-section',
@@ -211,9 +212,10 @@ export default function LandingPage() {
   return (
     <div ref={containerRef} className={`relative overflow-hidden ${isMobile ? 'min-h-[200vh]' : 'min-h-[300vh]'}`}>
       {/* ====== HERO SECTION (Pinned) ====== */}
-      <motion.div
+      <motion.section
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
         className="sticky top-0 h-screen w-full overflow-hidden"
+        aria-label="Lumina Blog hero section"
       >
         {/* Video Background — Slow abstract ink in water */}
         <video
@@ -224,19 +226,21 @@ export default function LandingPage() {
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
           style={{ filter: 'saturate(1.2) contrast(1.1)' }}
+          aria-hidden="true"
         >
           <source src="/hero-bg.mp4" type="video/mp4" />
         </video>
 
         {/* Multi-layer dark overlays for depth */}
-        <div className="absolute inset-0 bg-black/65" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/50 to-[#0a0a0a]/30" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/80 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/60 via-transparent to-[#0a0a0a]/60" />
+        <div className="absolute inset-0 bg-black/65" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/50 to-[#0a0a0a]/30" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/80 via-transparent to-transparent" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/60 via-transparent to-[#0a0a0a]/60" aria-hidden="true" />
 
         {/* Scanlines for cinematic texture */}
         <div
           className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
           style={{
             backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px)',
             opacity: 0.6,
@@ -244,7 +248,7 @@ export default function LandingPage() {
         />
 
         {/* Radial orange glow behind LUMINA text */}
-        <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <div
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.06]"
             style={{ width: isMobile ? '400px' : '900px', height: isMobile ? '400px' : '900px', background: 'radial-gradient(circle, #f97316 0%, transparent 60%)' }}
@@ -252,11 +256,11 @@ export default function LandingPage() {
         </div>
 
         {/* Bottom accent line */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#f97316]/25 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#f97316]/25 to-transparent" aria-hidden="true" />
 
         {/* Floating Glass Cards in 3D space (desktop only) */}
         {!isMobile && (
-          <div className="floating-card-layer absolute inset-0 pointer-events-none">
+          <div className="floating-card-layer absolute inset-0 pointer-events-none" aria-hidden="true">
             {floatingPosts.map((post, i) => (
               <FloatingGlassCard key={i} post={post} index={i} isMobile={false} />
             ))}
@@ -294,7 +298,7 @@ export default function LandingPage() {
             transition={{ delay: 0.8, duration: 0.8 }}
             className="text-sm sm:text-lg text-white/30 font-light tracking-[0.1em] sm:tracking-[0.15em] max-w-xs sm:max-w-xl mx-auto mb-6 sm:mb-10 uppercase"
           >
-            Where creators shine. Stories that illuminate.
+            Where creators shine. Lumina Articles that illuminate.
           </motion.p>
 
           {/* Liquid CTA Button */}
@@ -319,12 +323,12 @@ export default function LandingPage() {
             >
               Create Account
             </button>
-            <span className="text-white/10">|</span>
+            <span className="text-white/10" aria-hidden="true">|</span>
             <button
               onClick={() => navigate('browse')}
               className="text-xs sm:text-sm text-white/40 hover:text-white/60 transition-colors font-medium tracking-wide"
             >
-              Browse as Guest
+              Browse Lumina Articles
             </button>
           </motion.div>
 
@@ -334,6 +338,7 @@ export default function LandingPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 2.5, duration: 1 }}
             className="absolute bottom-8 sm:bottom-10 left-1/2 -translate-x-1/2"
+            aria-hidden="true"
           >
             <motion.div
               animate={{ y: [0, 8, 0] }}
@@ -345,18 +350,19 @@ export default function LandingPage() {
             </motion.div>
           </motion.div>
         </div>
-      </motion.div>
+      </motion.section>
 
       {/* ====== SPLIT-SCREEN SPIDERHECK SECTION ====== */}
-      <motion.div
+      <motion.section
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: '-100px' }}
         transition={{ duration: 1.2 }}
         className="relative bg-[#0a0a0a]"
+        aria-label="Featured Lumina Article"
       >
         {/* Vertical Wipe Transition Bar */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#f97316]/30 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#f97316]/30 to-transparent" aria-hidden="true" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24">
           {/* Section Label */}
@@ -367,16 +373,16 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
             className="mb-8 sm:mb-12"
           >
-            <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-white/20 flex items-center gap-3">
+            <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-white/20 flex items-center gap-3">
               <span className="w-8 h-px bg-[#f97316]/30" />
-              Featured Story
-            </h3>
+              Featured Lumina Article
+            </h2>
           </motion.div>
 
           {/* Split Layout */}
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             {/* LEFT: Featured Video Preview */}
-            <motion.div
+            <motion.article
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -393,16 +399,18 @@ export default function LandingPage() {
                   muted
                   playsInline
                   className="absolute inset-0 w-full h-full object-cover"
+                  aria-hidden="true"
                 >
                   <source src="/hero-bg.mp4" type="video/mp4" />
                 </video>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/30 via-transparent to-transparent" />
-                <div className="absolute inset-0 bg-[#0a0a0a]/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent" aria-hidden="true" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/30 via-transparent to-transparent" aria-hidden="true" />
+                <div className="absolute inset-0 bg-[#0a0a0a]/20" aria-hidden="true" />
 
                 {/* Scanlines */}
                 <div className="absolute inset-0 pointer-events-none"
+                  aria-hidden="true"
                   style={{
                     backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px)',
                     opacity: 0.5,
@@ -425,30 +433,30 @@ export default function LandingPage() {
                 </div>
 
                 {/* Play Icon */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
                   <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-[#f97316]/15 backdrop-blur-sm border border-[#f97316]/25 flex items-center justify-center">
                     <div className="w-0 h-0 border-t-[8px] sm:border-t-[10px] border-t-transparent border-b-[8px] sm:border-b-[10px] border-b-transparent border-l-[12px] sm:border-l-[16px] border-l-[#f97316] ml-0.5 sm:ml-1" />
                   </div>
                 </div>
 
                 {/* Bottom accent */}
-                <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#f97316]/30 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#f97316]/30 to-transparent" aria-hidden="true" />
 
                 {/* Title Overlay */}
                 <div className="absolute bottom-0 left-0 right-0 z-10 p-4 sm:p-8">
                   <span className="inline-flex items-center px-2.5 sm:px-3 py-1 rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#f97316]/10 border border-[#f97316]/20 text-[#f97316]/80 mb-2 sm:mb-3">
-                    Featured
+                    Featured Lumina Article
                   </span>
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-tight" style={{ textShadow: '0 0 40px rgba(249,115,22,0.15)' }}>
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-tight" style={{ textShadow: '0 0 40px rgba(249,115,22,0.15)' }}>
                     The Art of Glassmorphism
-                  </h2>
-                  <p className="text-sm sm:text-base text-white/35 mt-1 sm:mt-2 max-w-lg">Exploring how frosted glass effects are transforming digital interfaces and creating depth in flat design.</p>
+                  </h3>
+                  <p className="text-sm sm:text-base text-white/35 mt-1 sm:mt-2 max-w-lg">Exploring how frosted glass effects are transforming digital interfaces and creating depth in flat design — a Lumina Article showcase.</p>
                 </div>
               </div>
-            </motion.div>
+            </motion.article>
 
             {/* RIGHT: Story Info Grid */}
-            <motion.div
+            <motion.aside
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -487,16 +495,16 @@ export default function LandingPage() {
               <div className="flex items-start gap-2 p-2.5 sm:p-3 rounded-lg bg-[#f97316]/5 border border-[#f97316]/10 mt-1 sm:mt-2">
                 <Shield className="w-3.5 h-3.5 text-[#f97316]/40 shrink-0 mt-0.5" />
                 <p className="text-[10px] sm:text-[11px] text-white/25 leading-relaxed">
-                  80% of your support goes directly to the creator. 20% helps keep Lumina free for everyone.
+                  80% of your support goes directly to the creator of this Lumina Article. 20% helps keep Lumina Blog free for everyone.
                 </p>
               </div>
-            </motion.div>
+            </motion.aside>
           </div>
         </div>
-      </motion.div>
+      </motion.section>
 
       {/* ====== STATS SECTION ====== */}
-      <div className="stats-section py-12 sm:py-20 bg-[#0a0a0a] relative">
+      <section className="stats-section py-12 sm:py-20 bg-[#0a0a0a] relative" aria-label="Lumina Blog statistics">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-3 gap-4 sm:gap-8">
             {STATS.map((stat, i) => (
@@ -509,10 +517,10 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* ====== FEATURES SECTION ====== */}
-      <div className="features-section py-16 sm:py-24 bg-[#0a0a0a] relative">
+      <section className="features-section py-16 sm:py-24 bg-[#0a0a0a] relative" aria-label="Lumina Blog features">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -525,18 +533,18 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {FEATURES.map((feature, i) => (
               <div key={i} className="feature-card">
-                <div className="glass-card p-6 sm:p-8 h-full text-center">
+                <article className="glass-card p-6 sm:p-8 h-full text-center">
                   <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-[#f97316]/10 to-[#f59e0b]/10 border border-[#f97316]/10 flex items-center justify-center mx-auto mb-4 sm:mb-5">
-                    <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#f97316]/60" />
+                    <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#f97316]/60" aria-hidden="true" />
                   </div>
                   <h3 className="text-base sm:text-lg font-bold text-white mb-2 sm:mb-3">{feature.label}</h3>
                   <p className="text-xs sm:text-sm text-white/35 leading-relaxed">{feature.desc}</p>
-                </div>
+                </article>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

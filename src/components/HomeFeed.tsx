@@ -75,9 +75,11 @@ function PostCard({ post, index }: { post: Post; index: number }) {
         <div className="relative w-full overflow-hidden" style={{ aspectRatio: '16/9' }}>
           <img
             src={post.thumbnail}
-            alt={post.title}
+            alt={`Lumina Article Preview - ${post.title}`}
             className={`w-full h-full object-cover transition-all duration-700 ${isHovered ? 'opacity-0 scale-105' : 'opacity-100'}`}
             loading="lazy"
+            width={800}
+            height={450}
           />
           <video
             ref={videoRef}
@@ -344,7 +346,7 @@ export default function HomeFeed() {
           >
             <span className="gradient-text">Discover</span>
             <br />
-            <span className="text-white/90">Stories</span>
+            <span className="text-white/90">Lumina Articles</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 15 }}
@@ -352,8 +354,8 @@ export default function HomeFeed() {
             transition={{ delay: 0.6, duration: 0.6 }}
             className="text-sm sm:text-base md:text-lg text-white/35 max-w-xl leading-relaxed"
           >
-            Where artists share their craft. Explore insights on design, development,
-            and creative technology through articles and videos.
+            Where artists share their craft. Explore Lumina Articles and videos on design,
+            development, and creative technology. Support creators with 80/20 revenue sharing.
           </motion.p>
           <motion.div
             initial={{ scaleX: 0 }}
@@ -471,8 +473,8 @@ export default function HomeFeed() {
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#f97316]/10 to-[#f59e0b]/10 border border-[#f97316]/10 flex items-center justify-center">
                   <Sparkles className="w-6 h-6 text-[#f97316]/20" />
                 </div>
-                <p className="text-white/40 text-lg font-medium">No articles yet</p>
-                <p className="text-white/20 text-sm mt-2">Be the first to share your story</p>
+                <p className="text-white/40 text-lg font-medium">No Lumina Articles yet</p>
+                <p className="text-white/20 text-sm mt-2">Be the first to publish a Lumina Article</p>
                 <button onClick={() => navigate('register')} className="mt-4 text-[#f97316] hover:underline text-sm">Sign up as an artist →</button>
               </motion.div>
             ) : (
