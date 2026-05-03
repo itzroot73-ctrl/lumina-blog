@@ -65,12 +65,12 @@ export const CATEGORIES = ['All', 'Tech', 'Design', 'Art', 'Lifestyle', 'Science
 export type Category = (typeof CATEGORIES)[number];
 
 export const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  Tech: { bg: 'rgba(0,240,255,0.12)', text: '#00f0ff', border: 'rgba(0,240,255,0.25)' },
-  Design: { bg: 'rgba(168,85,247,0.12)', text: '#a855f7', border: 'rgba(168,85,247,0.25)' },
-  Art: { bg: 'rgba(244,63,94,0.12)', text: '#f43f5e', border: 'rgba(244,63,94,0.25)' },
+  Tech: { bg: 'rgba(249,115,22,0.12)', text: '#f97316', border: 'rgba(249,115,22,0.25)' },
+  Design: { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b', border: 'rgba(245,158,11,0.25)' },
+  Art: { bg: 'rgba(220,38,38,0.12)', text: '#dc2626', border: 'rgba(220,38,38,0.25)' },
   Lifestyle: { bg: 'rgba(16,185,129,0.12)', text: '#10b981', border: 'rgba(16,185,129,0.25)' },
   Science: { bg: 'rgba(59,130,246,0.12)', text: '#3b82f6', border: 'rgba(59,130,246,0.25)' },
-  Business: { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b', border: 'rgba(245,158,11,0.25)' },
+  Business: { bg: 'rgba(234,179,8,0.12)', text: '#eab308', border: 'rgba(234,179,8,0.25)' },
 };
 
 interface AppState {

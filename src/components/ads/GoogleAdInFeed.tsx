@@ -95,7 +95,7 @@ export default function GoogleAdInFeed({ index = 0, className = '' }: GoogleAdIn
       ) : (
         /* Placeholder while lazy loading */
         <div className="flex flex-col items-center justify-center min-h-[200px] p-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00f0ff]/10 to-[#a855f7]/10 border border-white/5 flex items-center justify-center mb-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#f97316]/10 to-[#f59e0b]/10 border border-white/5 flex items-center justify-center mb-3">
             <Megaphone className="w-5 h-5 text-white/15" />
           </div>
           <div className="space-y-2 w-full max-w-[200px]">
@@ -107,7 +107,7 @@ export default function GoogleAdInFeed({ index = 0, className = '' }: GoogleAdIn
       )}
 
       {/* Decorative glow */}
-      <div className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full opacity-10 blur-[40px] pointer-events-none bg-gradient-to-r from-[#00f0ff] to-[#a855f7]" />
+      <div className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full opacity-10 blur-[40px] pointer-events-none bg-gradient-to-r from-[#f97316] to-[#f59e0b]" />
     </motion.div>
   );
 }

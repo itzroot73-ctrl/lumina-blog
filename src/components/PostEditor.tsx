@@ -145,7 +145,7 @@ export default function PostEditor({ post, onSaveComplete }: PostEditorProps) {
           <Button
             onClick={handleSave}
             disabled={saving}
-            className="bg-gradient-to-r from-[#00f0ff] to-[#a855f7] hover:opacity-90 text-white border-0"
+            className="bg-gradient-to-r from-[#f97316] to-[#f59e0b] hover:opacity-90 text-white border-0"
           >
             {saving ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -169,7 +169,7 @@ export default function PostEditor({ post, onSaveComplete }: PostEditorProps) {
         <div className="glass-card p-8">
           <div className="prose-dark max-w-none">
             <div className="flex items-center gap-3 mb-4">
-              <h1 className="text-3xl font-bold text-[#00f0ff]">
+              <h1 className="text-3xl font-bold text-[#f97316]">
                 {title || 'Untitled Post'}
               </h1>
               {category && (

@@ -18,6 +18,7 @@ import {
   TrendingUp,
   BarChart3,
   PenSquare,
+  DollarSign,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
@@ -28,11 +29,15 @@ function StatCard({
   label,
   value,
   color,
+  prefix = '',
+  suffix = '',
 }: {
   icon: React.ElementType;
   label: string;
   value: number;
   color: string;
+  prefix?: string;
+  suffix?: string;
 }) {
   return (
     <motion.div
@@ -47,7 +52,7 @@ function StatCard({
         <Icon className="w-5 h-5" style={{ color }} />
       </div>
       <div>
-        <p className="text-2xl font-bold text-white">{value}</p>
+        <p className="text-2xl font-bold text-white">{prefix}{typeof value === 'number' && !Number.isInteger(value) ? value.toFixed(2) : value}{suffix}</p>
         <p className="text-xs text-white/40">{label}</p>
       </div>
     </motion.div>
@@ -171,6 +176,9 @@ export default function Dashboard() {
     loadMyPosts();
   };
 
+  // Calculate revenue: $0.02 per view, author gets 20%
+  const totalRevenue = myPostsStats ? parseFloat((myPostsStats.totalViews * 0.02 * 0.20).toFixed(2)) : 0;
+
   if (!user) return null;
 
   return (
@@ -183,9 +191,9 @@ export default function Dashboard() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Avatar className="h-12 w-12 border-2 border-[#00f0ff]/30">
+            <Avatar className="h-12 w-12 border-2 border-[#f97316]/30">
               <AvatarImage src={user.avatar || undefined} alt={user.name} />
-              <AvatarFallback className="bg-gradient-to-br from-[#00f0ff]/20 to-[#a855f7]/20 text-white">
+              <AvatarFallback className="bg-gradient-to-br from-[#f97316]/20 to-[#f59e0b]/20 text-white">
                 {user.name.charAt(0)}
               </AvatarFallback>
             </Avatar>
@@ -196,7 +204,7 @@ export default function Dashboard() {
           </div>
           <Button
             onClick={handleNewPost}
-            className="bg-gradient-to-r from-[#00f0ff] to-[#a855f7] hover:opacity-90 text-white border-0"
+            className="bg-gradient-to-r from-[#f97316] to-[#f59e0b] hover:opacity-90 text-white border-0"
           >
             <Plus className="w-4 h-4 mr-2" />
             New Post
@@ -204,12 +212,12 @@ export default function Dashboard() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <StatCard
             icon={FileText}
             label="Total Posts"
             value={myPostsStats?.totalPosts || 0}
-            color="#00f0ff"
+            color="#f97316"
           />
           <StatCard
             icon={TrendingUp}
@@ -221,13 +229,20 @@ export default function Dashboard() {
             icon={Eye}
             label="Total Views"
             value={myPostsStats?.totalViews || 0}
-            color="#a855f7"
+            color="#f59e0b"
           />
           <StatCard
             icon={Heart}
             label="Total Likes"
             value={myPostsStats?.totalLikes || 0}
-            color="#f43f5e"
+            color="#dc2626"
+          />
+          <StatCard
+            icon={DollarSign}
+            label="Revenue (20%)"
+            value={totalRevenue}
+            color="#10b981"
+            prefix="$"
           />
         </div>
 
@@ -277,7 +292,7 @@ export default function Dashboard() {
                 <Button
                   onClick={handleNewPost}
                   variant="outline"
-                  className="border-[#00f0ff]/30 text-[#00f0ff] hover:bg-[#00f0ff]/10"
+                  className="border-[#f97316]/30 text-[#f97316] hover:bg-[#f97316]/10"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Create Post
@@ -317,13 +332,13 @@ export default function Dashboard() {
                       <span className="text-white/60 truncate mr-2">
                         {post.title}
                       </span>
-                      <span className="text-[#00f0ff] shrink-0">
+                      <span className="text-[#f97316] shrink-0">
                         {post.views}
                       </span>
                     </div>
                     <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-[#00f0ff] to-[#a855f7] rounded-full transition-all"
+                        className="h-full bg-gradient-to-r from-[#f97316] to-[#f59e0b] rounded-full transition-all"
                         style={{
                           width: `${
                             myPostsStats?.totalViews
@@ -353,13 +368,13 @@ export default function Dashboard() {
                       <span className="text-white/60 truncate mr-2">
                         {post.title}
                       </span>
-                      <span className="text-[#a855f7] shrink-0">
+                      <span className="text-[#f59e0b] shrink-0">
                         {post._count?.likes || 0}
                       </span>
                     </div>
                     <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-[#a855f7] to-[#10b981] rounded-full transition-all"
+                        className="h-full bg-gradient-to-r from-[#f59e0b] to-[#10b981] rounded-full transition-all"
                         style={{
                           width: `${
                             myPostsStats?.totalLikes
@@ -376,6 +391,52 @@ export default function Dashboard() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Revenue Breakdown */}
+            <div className="glass-card p-6 md:col-span-2">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-[#10b981]" />
+                Revenue Breakdown (20% of $0.02/view)
+              </h3>
+              <div className="space-y-3 max-h-80 overflow-y-auto">
+                {myPosts.map((post) => {
+                  const postRevenue = (post.views * 0.02 * 0.20).toFixed(2);
+                  return (
+                    <div key={post.id}>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-white/60 truncate mr-2">
+                          {post.title}
+                        </span>
+                        <span className="text-[#10b981] shrink-0">
+                          ${postRevenue}
+                        </span>
+                      </div>
+                      <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-[#10b981] to-[#f59e0b] rounded-full transition-all"
+                          style={{
+                            width: `${
+                              myPostsStats?.totalViews
+                                ? Math.max(
+                                    2,
+                                    (post.views / myPostsStats.totalViews) * 100
+                                  )
+                                : 2
+                            }%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+                {myPosts.length > 0 && (
+                  <div className="flex justify-between text-sm pt-3 border-t border-white/5">
+                    <span className="text-white/80 font-semibold">Total Revenue</span>
+                    <span className="text-[#10b981] font-bold">${totalRevenue.toFixed(2)}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>

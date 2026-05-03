@@ -39,8 +39,8 @@ export default function CookieConsentBanner({
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 {/* Icon */}
-                <div className="shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-[#00f0ff]/15 to-[#a855f7]/15 border border-white/10 flex items-center justify-center">
-                  <Cookie className="w-5 h-5 text-[#00f0ff]" />
+                <div className="shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-[#f97316]/15 to-[#f59e0b]/15 border border-white/10 flex items-center justify-center">
+                  <Cookie className="w-5 h-5 text-[#f97316]" />
                 </div>
 
                 {/* Content */}
@@ -53,7 +53,7 @@ export default function CookieConsentBanner({
                     We use cookies and similar technologies to enhance your experience, serve relevant ads,
                     and analyze traffic. By clicking &quot;Accept&quot;, you consent to our use of cookies for
                     advertising purposes. You can learn more in our{' '}
-                    <button className="text-[#00f0ff] hover:underline">Privacy Policy</button>.
+                    <button className="text-[#f97316] hover:underline">Privacy Policy</button>.
                   </p>
                 </div>
 
@@ -70,7 +70,7 @@ export default function CookieConsentBanner({
                   <Button
                     size="sm"
                     onClick={onAccept}
-                    className="flex-1 sm:flex-none bg-gradient-to-r from-[#00f0ff] to-[#a855f7] hover:opacity-90 text-white border-0 text-xs h-8 font-semibold"
+                    className="flex-1 sm:flex-none bg-gradient-to-r from-[#f97316] to-[#f59e0b] hover:opacity-90 text-white border-0 text-xs h-8 font-semibold"
                   >
                     Accept Cookies
                   </Button>

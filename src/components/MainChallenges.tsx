@@ -25,7 +25,7 @@ export default function MainChallenges({ excerpt, challenges }: MainChallengesPr
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className="w-full"
     >
-      {/* Section Header — SpiderHeck purple accent */}
+      {/* Section Header — Amber accent */}
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={isInView ? { opacity: 1, x: 0 } : {}}
@@ -33,12 +33,12 @@ export default function MainChallenges({ excerpt, challenges }: MainChallengesPr
         className="mb-5"
       >
         <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-white/25 flex items-center gap-2">
-          <span className="w-6 h-px bg-[#a855f7]/30" />
+          <span className="w-6 h-px bg-[#f59e0b]/30" />
           Main Challenges
         </h3>
       </motion.div>
 
-      {/* Challenges List — SpiderHeck glass */}
+      {/* Challenges List — glass */}
       <div className="glass-challenges-card p-5 sm:p-6 space-y-3">
         {parsedChallenges.map((challenge, index) => (
           <motion.div
@@ -48,9 +48,9 @@ export default function MainChallenges({ excerpt, challenges }: MainChallengesPr
             transition={{ duration: 0.4, delay: 0.15 + index * 0.08 }}
             className="flex items-start gap-3 group"
           >
-            {/* Bullet indicator — SpiderHeck neon dot */}
+            {/* Bullet indicator — neon dot */}
             <div className="shrink-0 mt-1.5 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#a855f7] group-hover:bg-[#00f0ff] transition-colors shadow-[0_0_4px_rgba(168,85,247,0.5)] group-hover:shadow-[0_0_4px_rgba(0,240,255,0.5)]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#f59e0b] group-hover:bg-[#f97316] transition-colors shadow-[0_0_4px_rgba(245,158,11,0.5)] group-hover:shadow-[0_0_4px_rgba(249,115,22,0.5)]" />
               <span className="text-[10px] font-bold text-white/10 tabular-nums">
                 {String(index + 1).padStart(2, '0')}
               </span>

@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Lumin — Glassmorphic Blog Platform",
+  title: "Lumin — Orange & Black Blog Platform",
   description: "A cinematic, glassmorphic blog platform for artists and creators. Discover, create, and share content in a stunning dark interface.",
   keywords: ["Lumin", "Blog", "Glassmorphic", "Dark Theme", "Creative Writing", "Cinematic"],
   icons: {

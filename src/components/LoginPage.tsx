@@ -48,7 +48,7 @@ export default function LoginPage() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00f0ff] to-[#a855f7] mx-auto mb-4 flex items-center justify-center"
+              className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f97316] to-[#f59e0b] mx-auto mb-4 flex items-center justify-center"
             >
               <Lock className="w-6 h-6 text-white" />
             </motion.div>
@@ -57,8 +57,8 @@ export default function LoginPage() {
           </div>
 
           {/* Demo credentials hint */}
-          <div className="mb-6 p-3 rounded-lg bg-[#00f0ff]/5 border border-[#00f0ff]/10">
-            <p className="text-xs text-[#00f0ff]/70 text-center">
+          <div className="mb-6 p-3 rounded-lg bg-[#f97316]/5 border border-[#f97316]/10">
+            <p className="text-xs text-[#f97316]/70 text-center">
               Demo: luna@artisan.dev / password123
             </p>
           </div>
@@ -101,7 +101,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-11 bg-gradient-to-r from-[#00f0ff] to-[#a855f7] hover:opacity-90 text-white border-0 font-medium"
+              className="w-full h-11 bg-gradient-to-r from-[#f97316] to-[#f59e0b] hover:opacity-90 text-white border-0 font-medium"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -118,7 +118,7 @@ export default function LoginPage() {
             Don&apos;t have an account?{' '}
             <button
               onClick={() => navigate('register')}
-              className="text-[#00f0ff] hover:underline"
+              className="text-[#f97316] hover:underline"
             >
               Sign up
             </button>

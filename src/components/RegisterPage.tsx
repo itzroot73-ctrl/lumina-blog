@@ -55,7 +55,7 @@ export default function RegisterPage() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#a855f7] to-[#10b981] mx-auto mb-4 flex items-center justify-center"
+              className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f59e0b] to-[#10b981] mx-auto mb-4 flex items-center justify-center"
             >
               <User className="w-6 h-6 text-white" />
             </motion.div>
@@ -74,7 +74,7 @@ export default function RegisterPage() {
                 onClick={() => setRole('artist')}
                 className={`p-3 rounded-xl border transition-all text-center ${
                   role === 'artist'
-                    ? 'border-[#00f0ff]/50 bg-[#00f0ff]/10 text-[#00f0ff]'
+                    ? 'border-[#f97316]/50 bg-[#f97316]/10 text-[#f97316]'
                     : 'border-white/10 bg-white/5 text-white/50 hover:border-white/20'
                 }`}
               >
@@ -87,7 +87,7 @@ export default function RegisterPage() {
                 onClick={() => setRole('reader')}
                 className={`p-3 rounded-xl border transition-all text-center ${
                   role === 'reader'
-                    ? 'border-[#a855f7]/50 bg-[#a855f7]/10 text-[#a855f7]'
+                    ? 'border-[#f59e0b]/50 bg-[#f59e0b]/10 text-[#f59e0b]'
                     : 'border-white/10 bg-white/5 text-white/50 hover:border-white/20'
                 }`}
               >
@@ -168,7 +168,7 @@ export default function RegisterPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-11 bg-gradient-to-r from-[#a855f7] to-[#10b981] hover:opacity-90 text-white border-0 font-medium"
+              className="w-full h-11 bg-gradient-to-r from-[#f59e0b] to-[#10b981] hover:opacity-90 text-white border-0 font-medium"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -185,7 +185,7 @@ export default function RegisterPage() {
             Already have an account?{' '}
             <button
               onClick={() => navigate('login')}
-              className="text-[#00f0ff] hover:underline"
+              className="text-[#f97316] hover:underline"
             >
               Sign in
             </button>

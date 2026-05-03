@@ -20,6 +20,7 @@ import {
   ArrowLeft,
   Send,
   Check,
+  Trash2,
 } from 'lucide-react';
 
 function CommentCard({ comment }: { comment: CommentType }) {
@@ -32,7 +33,7 @@ function CommentCard({ comment }: { comment: CommentType }) {
       <div className="flex items-start gap-3">
         <Avatar className="h-8 w-8 border border-white/10 shrink-0">
           <AvatarImage src={comment.author.avatar || undefined} alt={comment.author.name} />
-          <AvatarFallback className="bg-gradient-to-br from-[#00f0ff]/20 to-[#a855f7]/20 text-white text-xs">
+          <AvatarFallback className="bg-gradient-to-br from-[#f97316]/20 to-[#f59e0b]/20 text-white text-xs">
             {comment.author.name.charAt(0)}
           </AvatarFallback>
         </Avatar>
@@ -40,7 +41,7 @@ function CommentCard({ comment }: { comment: CommentType }) {
           <div className="flex items-center gap-2 mb-1">
             <button
               onClick={() => {}}
-              className="text-sm font-medium text-white/80 hover:text-[#00f0ff] transition-colors"
+              className="text-sm font-medium text-white/80 hover:text-[#f97316] transition-colors"
             >
               {comment.author.name}
             </button>
@@ -85,10 +86,12 @@ export default function PostDetail() {
     loadComments,
     toggleLike,
     addComment,
+    deletePost,
     viewParams,
   } = useAppStore();
 
   const isPremium = user?.isPremium ?? false;
+  const isAuthor = user?.id === currentPost?.authorId;
 
   const [commentText, setCommentText] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
@@ -153,6 +156,18 @@ export default function PostDetail() {
       setTimeout(() => setShared(false), 2000);
     } catch {
       toast.error('Failed to copy link');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!currentPost) return;
+    if (!confirm('Are you sure you want to delete this post? This action cannot be undone.')) return;
+    try {
+      await deletePost(currentPost.id);
+      toast.success('Post deleted successfully');
+      navigate('home');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete post');
     }
   };
 
@@ -236,7 +251,7 @@ export default function PostDetail() {
               variant="ghost"
               size="sm"
               onClick={() => document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="text-white/40 hover:text-[#00f0ff] rounded-full px-3"
+              className="text-white/40 hover:text-[#f97316] rounded-full px-3"
             >
               <MessageCircle className="w-4 h-4 mr-1" />
               <span className="text-xs">{currentPost._count?.comments || 0}</span>
@@ -257,6 +272,21 @@ export default function PostDetail() {
               )}
               <span className="text-xs">{shared ? 'Copied!' : 'Share'}</span>
             </Button>
+
+            {isAuthor && (
+              <>
+                <div className="w-px h-4 bg-white/10" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleDelete}
+                  className="text-white/40 hover:text-red-400 rounded-full px-3"
+                >
+                  <Trash2 className="w-4 h-4 mr-1" />
+                  <span className="text-xs">Delete</span>
+                </Button>
+              </>
+            )}
           </div>
         </ScrollReveal>
       </div>
@@ -296,7 +326,7 @@ export default function PostDetail() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-12" id="comments-section">
         <ScrollReveal>
           <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-white/30 flex items-center gap-2 mb-6">
-            <span className="w-6 h-px bg-[#a855f7]/40" />
+            <span className="w-6 h-px bg-[#f59e0b]/40" />
             Discussion
             <span className="text-white/15 font-normal normal-case tracking-normal ml-1">
               ({currentPostComments.length})
@@ -316,7 +346,7 @@ export default function PostDetail() {
                 <Button
                   type="submit"
                   disabled={submittingComment || !commentText.trim()}
-                  className="bg-gradient-to-r from-[#a855f7] to-[#10b981] hover:opacity-90 text-white border-0 shrink-0 rounded-xl h-11 w-11 p-0 flex items-center justify-center"
+                  className="bg-gradient-to-r from-[#f59e0b] to-[#10b981] hover:opacity-90 text-white border-0 shrink-0 rounded-xl h-11 w-11 p-0 flex items-center justify-center"
                 >
                   {submittingComment ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -331,7 +361,7 @@ export default function PostDetail() {
               <p className="text-white/40 text-sm">
                 <button
                   onClick={() => navigate('login')}
-                  className="text-[#00f0ff] hover:underline"
+                  className="text-[#f97316] hover:underline"
                 >
                   Sign in
                 </button>{' '}

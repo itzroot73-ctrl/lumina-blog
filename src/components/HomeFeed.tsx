@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GoogleAdInFeed, GoogleAdSidebar } from './ads';
 
-// Use the user-uploaded SpiderHeck video
+// Use the user-uploaded video
 const HERO_VIDEO_URL = '/hero-bg.mp4';
 
 function CategoryBadge({ category }: { category: string }) {
@@ -55,7 +55,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#060610] via-[#060610]/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/30 to-transparent" />
 
           {/* Category Badge on thumbnail */}
           <div className="absolute top-3 left-3">
@@ -66,7 +66,7 @@ function PostCard({ post, index }: { post: Post; index: number }) {
           <div className="absolute bottom-3 left-3">
             <Badge
               variant="secondary"
-              className="bg-[#060610]/60 backdrop-blur-sm text-white/80 border-white/10 text-xs"
+              className="bg-[#0a0a0a]/60 backdrop-blur-sm text-white/80 border-white/10 text-xs"
             >
               <Clock className="w-3 h-3 mr-1" />
               {post.readingTime} min read
@@ -74,15 +74,15 @@ function PostCard({ post, index }: { post: Post; index: number }) {
           </div>
 
           {/* Hover arrow indicator */}
-          <div className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-[#00f0ff]/10 backdrop-blur-sm border border-[#00f0ff]/20 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-            <ChevronRight className="w-4 h-4 text-[#00f0ff]" />
+          <div className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-[#f97316]/10 backdrop-blur-sm border border-[#f97316]/20 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+            <ChevronRight className="w-4 h-4 text-[#f97316]" />
           </div>
         </div>
       )}
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="text-base font-bold text-white mb-2 line-clamp-2 group-hover:text-[#00f0ff] transition-colors leading-snug">
+        <h3 className="text-base font-bold text-white mb-2 line-clamp-2 group-hover:text-[#f97316] transition-colors leading-snug">
           {post.title}
         </h3>
         {post.excerpt && (
@@ -102,11 +102,11 @@ function PostCard({ post, index }: { post: Post; index: number }) {
           >
             <Avatar className="h-7 w-7 border border-white/10">
               <AvatarImage src={post.author.avatar || undefined} alt={post.author.name} />
-              <AvatarFallback className="bg-gradient-to-br from-[#00f0ff]/20 to-[#a855f7]/20 text-white text-xs">
+              <AvatarFallback className="bg-gradient-to-br from-[#f97316]/20 to-[#f59e0b]/20 text-white text-xs">
                 {post.author.name.charAt(0)}
               </AvatarFallback>
             </Avatar>
-            <span className="text-xs text-white/40 group-hover/author:text-[#00f0ff]/70 transition-colors">
+            <span className="text-xs text-white/40 group-hover/author:text-[#f97316]/70 transition-colors">
               {post.author.name}
             </span>
           </button>
@@ -149,15 +149,15 @@ function NoResultsCard({ searchQuery }: { searchQuery: string }) {
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#00f0ff]/10 to-[#a855f7]/10 border border-[#00f0ff]/10 flex items-center justify-center"
+        className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#f97316]/10 to-[#f59e0b]/10 border border-[#f97316]/10 flex items-center justify-center"
       >
-        <Search className="w-8 h-8 text-[#00f0ff]/20" />
+        <Search className="w-8 h-8 text-[#f97316]/20" />
       </motion.div>
       <h3 className="text-xl font-bold text-white/60 mb-2">No results found</h3>
       <p className="text-white/30 text-sm mb-1">
         We couldn&apos;t find anything matching
       </p>
-      <p className="text-[#00f0ff]/60 text-sm font-medium mb-6">
+      <p className="text-[#f97316]/60 text-sm font-medium mb-6">
         &ldquo;{searchQuery}&rdquo;
       </p>
       <p className="text-white/20 text-xs">
@@ -228,7 +228,7 @@ export default function HomeFeed() {
         className="relative w-full overflow-hidden rounded-2xl mb-14"
         style={{ minHeight: '55vh' }}
       >
-        {/* Video Background — User's SpiderHeck video */}
+        {/* Video Background */}
         <video
           autoPlay
           loop
@@ -239,13 +239,13 @@ export default function HomeFeed() {
           <source src={HERO_VIDEO_URL} type="video/mp4" />
         </video>
 
-        {/* SpiderHeck-style multi-layer gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#060610] via-[#060610]/60 to-[#060610]/20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#060610]/70 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#060610]/40 via-transparent to-[#060610]/40" />
-        <div className="absolute inset-0 bg-[#060610]/30" />
+        {/* Multi-layer gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-[#0a0a0a]/20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/70 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/40 via-transparent to-[#0a0a0a]/40" />
+        <div className="absolute inset-0 bg-[#0a0a0a]/30" />
 
-        {/* Scanlines — more prominent for SpiderHeck feel */}
+        {/* Scanlines */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -263,8 +263,8 @@ export default function HomeFeed() {
           }}
         />
 
-        {/* SpiderHeck-style bottom accent line */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#00f0ff]/25 to-transparent" />
+        {/* Bottom accent line */}
+        <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#f97316]/25 to-transparent" />
 
         {/* Hero Content */}
         <div className="relative z-10 flex flex-col justify-end h-full min-h-[55vh] px-6 sm:px-10 lg:px-16 pb-12 pt-24">
@@ -272,17 +272,17 @@ export default function HomeFeed() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md w-fit mb-5 bg-[#00f0ff]/6 border border-[#00f0ff]/15"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md w-fit mb-5 bg-[#f97316]/6 border border-[#f97316]/15"
           >
-            <TrendingUp className="w-3.5 h-3.5 text-[#00f0ff]" />
-            <span className="text-xs text-[#00f0ff]/70 font-medium tracking-wide">Trending articles from top creators</span>
+            <TrendingUp className="w-3.5 h-3.5 text-[#f97316]" />
+            <span className="text-xs text-[#f97316]/70 font-medium tracking-wide">Trending articles from top creators</span>
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="text-5xl sm:text-6xl md:text-7xl font-black mb-4 tracking-tight leading-[0.95]"
-            style={{ textShadow: '0 0 60px rgba(0,240,255,0.12)' }}
+            style={{ textShadow: '0 0 60px rgba(249,115,22,0.12)' }}
           >
             <span className="gradient-text">Discover</span>
             <br />
@@ -301,13 +301,13 @@ export default function HomeFeed() {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ delay: 0.8, duration: 1, ease: 'easeOut' }}
-            className="mt-6 h-[2px] w-32 origin-left bg-gradient-to-r from-[#00f0ff] via-[#a855f7] to-transparent"
-            style={{ boxShadow: '0 0 8px rgba(0,240,255,0.3)' }}
+            className="mt-6 h-[2px] w-32 origin-left bg-gradient-to-r from-[#f97316] via-[#f59e0b] to-transparent"
+            style={{ boxShadow: '0 0 8px rgba(249,115,22,0.3)' }}
           />
         </div>
       </motion.div>
 
-      {/* Search Bar — SpiderHeck styled */}
+      {/* Search Bar */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -315,12 +315,12 @@ export default function HomeFeed() {
         className="max-w-xl mx-auto mb-6"
       >
         <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#00f0ff]/30" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#f97316]/30" />
           <Input
             value={search}
             onChange={handleSearchChange}
             placeholder="Search articles, topics, authors..."
-            className="glass-input pl-11 h-12 text-white placeholder:text-white/20 text-sm rounded-xl border-[#00f0ff]/10 focus:border-[#00f0ff]/30"
+            className="glass-input pl-11 h-12 text-white placeholder:text-white/20 text-sm rounded-xl border-[#f97316]/10 focus:border-[#f97316]/30"
           />
           {search && (
             <button
@@ -328,7 +328,7 @@ export default function HomeFeed() {
                 setSearch('');
                 loadPosts(undefined, activeCategory);
               }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-[#00f0ff]/60 text-xs transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-[#f97316]/60 text-xs transition-colors"
             >
               Clear
             </button>
@@ -336,7 +336,7 @@ export default function HomeFeed() {
         </div>
       </motion.div>
 
-      {/* Category Filter — SpiderHeck neon chips */}
+      {/* Category Filter — Orange neon chips */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -365,10 +365,10 @@ export default function HomeFeed() {
                     }
                   : isActive
                   ? {
-                      background: 'rgba(0,240,255,0.1)',
-                      border: '1px solid rgba(0,240,255,0.3)',
-                      color: '#00f0ff',
-                      boxShadow: '0 0 12px rgba(0,240,255,0.15), inset 0 0 12px rgba(0,240,255,0.05)',
+                      background: 'rgba(249,115,22,0.1)',
+                      border: '1px solid rgba(249,115,22,0.3)',
+                      color: '#f97316',
+                      boxShadow: '0 0 12px rgba(249,115,22,0.15), inset 0 0 12px rgba(249,115,22,0.05)',
                     }
                   : undefined
               }
@@ -409,8 +409,8 @@ export default function HomeFeed() {
                 animate={{ opacity: 1 }}
                 className="text-center py-20"
               >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#00f0ff]/10 to-[#a855f7]/10 border border-[#00f0ff]/10 flex items-center justify-center">
-                  <Sparkles className="w-6 h-6 text-[#00f0ff]/20" />
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#f97316]/10 to-[#f59e0b]/10 border border-[#f97316]/10 flex items-center justify-center">
+                  <Sparkles className="w-6 h-6 text-[#f97316]/20" />
                 </div>
                 <p className="text-white/40 text-lg font-medium">No articles yet</p>
                 <p className="text-white/20 text-sm mt-2">
@@ -418,7 +418,7 @@ export default function HomeFeed() {
                 </p>
                 <button
                   onClick={() => navigate('register')}
-                  className="mt-4 text-[#00f0ff] hover:underline text-sm"
+                  className="mt-4 text-[#f97316] hover:underline text-sm"
                 >
                   Sign up as an artist →
                 </button>
@@ -447,10 +447,10 @@ export default function HomeFeed() {
             {/* Google Sidebar Display Ad */}
             <GoogleAdSidebar />
 
-            {/* Trending Topics — SpiderHeck styled */}
+            {/* Trending Topics */}
             <div className="glass-card p-5">
               <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[#a855f7]" />
+                <TrendingUp className="w-4 h-4 text-[#f59e0b]" />
                 Trending Topics
               </h3>
               <div className="space-y-1.5">
@@ -462,10 +462,10 @@ export default function HomeFeed() {
                         setSearch(topic);
                         loadPosts(topic, activeCategory);
                       }}
-                      className="flex items-center gap-2.5 w-full text-left p-2.5 rounded-lg hover:bg-[#00f0ff]/5 transition-colors group"
+                      className="flex items-center gap-2.5 w-full text-left p-2.5 rounded-lg hover:bg-[#f97316]/5 transition-colors group"
                     >
-                      <span className="text-[10px] font-bold text-[#00f0ff]/20 w-5 tabular-nums">{i + 1}</span>
-                      <span className="text-sm text-white/40 group-hover:text-[#00f0ff]/70 transition-colors">
+                      <span className="text-[10px] font-bold text-[#f97316]/20 w-5 tabular-nums">{i + 1}</span>
+                      <span className="text-sm text-white/40 group-hover:text-[#f97316]/70 transition-colors">
                         {topic}
                       </span>
                     </button>

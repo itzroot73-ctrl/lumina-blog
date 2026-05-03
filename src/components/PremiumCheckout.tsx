@@ -78,7 +78,7 @@ export default function PremiumCheckout() {
             </button>
 
             {/* Header gradient */}
-            <div className="relative h-32 bg-gradient-to-br from-[#00f0ff]/20 via-[#a855f7]/15 to-[#10b981]/20 flex items-center justify-center">
+            <div className="relative h-32 bg-gradient-to-br from-[#f97316]/20 via-[#f59e0b]/15 to-[#10b981]/20 flex items-center justify-center">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -88,8 +88,8 @@ export default function PremiumCheckout() {
                 <Crown className="w-8 h-8 text-white" />
               </motion.div>
               {/* Decorative glows */}
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[#00f0ff] rounded-full opacity-10 blur-[50px]" />
-              <div className="absolute -top-6 -right-6 w-32 h-32 bg-[#a855f7] rounded-full opacity-10 blur-[50px]" />
+              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[#f97316] rounded-full opacity-10 blur-[50px]" />
+              <div className="absolute -top-6 -right-6 w-32 h-32 bg-[#f59e0b] rounded-full opacity-10 blur-[50px]" />
             </div>
 
             <div className="p-6">
@@ -249,7 +249,7 @@ export default function PremiumCheckout() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 200, delay: 0.1 }}
-                    className="w-16 h-16 rounded-full bg-gradient-to-br from-[#10b981] to-[#00f0ff] flex items-center justify-center mx-auto mb-4"
+                    className="w-16 h-16 rounded-full bg-gradient-to-br from-[#10b981] to-[#f97316] flex items-center justify-center mx-auto mb-4"
                   >
                     <Check className="w-8 h-8 text-white" />
                   </motion.div>
@@ -261,7 +261,7 @@ export default function PremiumCheckout() {
                   </p>
                   <Button
                     onClick={handleClose}
-                    className="bg-gradient-to-r from-[#10b981] to-[#00f0ff] hover:opacity-90 text-white border-0"
+                    className="bg-gradient-to-r from-[#10b981] to-[#f97316] hover:opacity-90 text-white border-0"
                   >
                     Start Reading
                   </Button>

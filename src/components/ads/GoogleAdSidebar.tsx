@@ -87,7 +87,7 @@ export default function GoogleAdSidebar({ className = '' }: GoogleAdSidebarProps
       ) : (
         /* Placeholder while lazy loading */
         <div className="glass-card p-6 flex flex-col items-center justify-center min-h-[250px]">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#a855f7]/10 to-[#f43f5e]/10 border border-white/5 flex items-center justify-center mb-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#f59e0b]/10 to-[#f43f5e]/10 border border-white/5 flex items-center justify-center mb-3">
             <MonitorSmartphone className="w-5 h-5 text-white/15" />
           </div>
           <div className="space-y-2 w-full">
@@ -99,7 +99,7 @@ export default function GoogleAdSidebar({ className = '' }: GoogleAdSidebarProps
       )}
 
       {/* Decorative glow */}
-      <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full opacity-10 blur-[30px] pointer-events-none bg-gradient-to-r from-[#a855f7] to-[#f43f5e]" />
+      <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full opacity-10 blur-[30px] pointer-events-none bg-gradient-to-r from-[#f59e0b] to-[#f43f5e]" />
     </motion.div>
   );
 }

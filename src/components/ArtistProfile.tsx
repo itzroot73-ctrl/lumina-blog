@@ -65,7 +65,7 @@ function ProfilePostCard({ post, index, onNavigate }: { post: Post; index: numbe
         </div>
       )}
       <div className="p-4">
-        <h4 className="text-sm font-semibold text-white mb-2 line-clamp-2 group-hover:text-[#00f0ff] transition-colors">
+        <h4 className="text-sm font-semibold text-white mb-2 line-clamp-2 group-hover:text-[#f97316] transition-colors">
           {post.title}
         </h4>
         <div className="flex items-center gap-3 text-xs text-white/40">
@@ -116,10 +116,10 @@ export default function ArtistProfile() {
       >
         {/* Cover Gradient */}
         <div className="relative h-48 sm:h-56 rounded-2xl overflow-hidden mb-6">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#00f0ff]/20 via-[#a855f7]/10 to-[#10b981]/20" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#f97316]/20 via-[#f59e0b]/10 to-[#10b981]/20" />
           <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 30% 50%, rgba(0,240,255,0.15) 0%, transparent 50%),
-                             radial-gradient(circle at 70% 50%, rgba(168,85,247,0.15) 0%, transparent 50%)`,
+            backgroundImage: `radial-gradient(circle at 30% 50%, rgba(249,115,22,0.15) 0%, transparent 50%),
+                             radial-gradient(circle at 70% 50%, rgba(245,158,11,0.15) 0%, transparent 50%)`,
           }} />
           {/* Grid overlay */}
           <div className="absolute inset-0 opacity-[0.04]" style={{
@@ -131,16 +131,16 @@ export default function ArtistProfile() {
 
         {/* Avatar & Info */}
         <div className="flex flex-col sm:flex-row items-start gap-6 -mt-16 relative z-10 px-4 sm:px-6">
-          <Avatar className="h-28 w-28 border-4 border-[#0a0a14] shadow-lg">
+          <Avatar className="h-28 w-28 border-4 border-[#0a0a0a] shadow-lg">
             <AvatarImage src={user.avatar || undefined} alt={user.name} />
-            <AvatarFallback className="bg-gradient-to-br from-[#00f0ff]/30 to-[#a855f7]/30 text-white text-3xl font-bold">
+            <AvatarFallback className="bg-gradient-to-br from-[#f97316]/30 to-[#f59e0b]/30 text-white text-3xl font-bold">
               {user.name.charAt(0)}
             </AvatarFallback>
           </Avatar>
 
           <div className="flex-1 pt-2 sm:pt-8">
             <h1 className="text-2xl sm:text-3xl font-bold text-white">{user.name}</h1>
-            <p className="text-[#00f0ff] text-sm">@{user.username}</p>
+            <p className="text-[#f97316] text-sm">@{user.username}</p>
             {user.bio && (
               <p className="text-white/50 text-sm mt-3 max-w-xl leading-relaxed">{user.bio}</p>
             )}
@@ -150,7 +150,7 @@ export default function ArtistProfile() {
                 Joined {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </span>
               {user.role === 'artist' && (
-                <Badge className="bg-[#00f0ff]/10 text-[#00f0ff] border-[#00f0ff]/20 text-xs">
+                <Badge className="bg-[#f97316]/10 text-[#f97316] border-[#f97316]/20 text-xs">
                   Artist
                 </Badge>
               )}
@@ -166,7 +166,7 @@ export default function ArtistProfile() {
             transition={{ delay: 0.1 }}
             className="glass-card p-4 text-center"
           >
-            <FileText className="w-5 h-5 text-[#00f0ff] mx-auto mb-2" />
+            <FileText className="w-5 h-5 text-[#f97316] mx-auto mb-2" />
             <p className="text-2xl font-bold text-white">
               <AnimatedCounter target={stats.totalPosts} />
             </p>
@@ -177,9 +177,9 @@ export default function ArtistProfile() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="glass-card p-4 text-center glow-cyan"
+            className="glass-card p-4 text-center glow-orange"
           >
-            <Eye className="w-5 h-5 text-[#a855f7] mx-auto mb-2" />
+            <Eye className="w-5 h-5 text-[#f59e0b] mx-auto mb-2" />
             <p className="text-2xl font-bold text-white">
               <AnimatedCounter target={stats.totalViews} />
             </p>
@@ -203,7 +203,7 @@ export default function ArtistProfile() {
         {/* Posts Section */}
         <div className="mt-10">
           <h2 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-[#a855f7]" />
+            <TrendingUp className="w-5 h-5 text-[#f59e0b]" />
             Published Works
           </h2>
 
