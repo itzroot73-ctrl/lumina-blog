@@ -49,7 +49,7 @@ export default function SponsorPopup() {
           animate={{ opacity: 1, y: 0, x: 0 }}
           exit={{ opacity: 0, y: 40, x: 20 }}
           transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="fixed bottom-6 right-6 z-[90] w-72"
+          className="fixed bottom-3 right-3 sm:bottom-6 sm:right-6 z-[90] w-[calc(100%-24px)] sm:w-72"
         >
           <div
             className="glass-card p-4 relative overflow-hidden"

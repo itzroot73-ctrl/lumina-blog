@@ -264,11 +264,11 @@ export default function HomeFeed() {
           initial={{ opacity: 0, y: -20, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
           <div
-            className="relative w-full overflow-hidden rounded-2xl sponsored-glow cursor-pointer"
-            style={{ minHeight: '35vh' }}
+            className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl sponsored-glow cursor-pointer"
+            style={{ minHeight: 'clamp(200px, 30vh, 35vh)' }}
             onClick={() => navigate('post', { id: topSponsored.id })}
           >
             <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover">
@@ -278,30 +278,30 @@ export default function HomeFeed() {
             <div className="absolute inset-0 bg-[#0a0a0a]/30" />
 
             {/* Sponsored Badge with Timer */}
-            <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-              <span className="glass-sponsored-badge text-xs">
-                <Zap className="w-3 h-3" />
+            <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
+              <span className="glass-sponsored-badge text-[9px] sm:text-xs">
+                <Zap className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                 Sponsored
               </span>
               {topSponsored.sponsorship?.expiresAt && (
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#f97316]/10 border border-[#f97316]/20 text-[#f97316]">
+                <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-bold bg-[#f97316]/10 border border-[#f97316]/20 text-[#f97316]">
                   {Math.max(0, Math.ceil((new Date(topSponsored.sponsorship.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60)))}h left
                 </span>
               )}
             </div>
 
-            <div className="relative z-10 flex flex-col justify-end h-full min-h-[35vh] px-8 pb-8 pt-16">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#f97316]/50 mb-2">Featured Sponsored Story</span>
-              <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight mb-2">{topSponsored.title}</h2>
-              <p className="text-sm text-white/35 max-w-lg">{topSponsored.excerpt}</p>
-              <div className="flex items-center gap-3 mt-4">
-                <Avatar className="h-7 w-7 border border-[#f97316]/20">
+            <div className="relative z-10 flex flex-col justify-end h-full px-4 sm:px-8 pb-4 sm:pb-8 pt-12">
+              <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[#f97316]/50 mb-1 sm:mb-2">Featured Sponsored Story</span>
+              <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-white leading-tight mb-1 sm:mb-2">{topSponsored.title}</h2>
+              <p className="text-xs sm:text-sm text-white/35 max-w-lg line-clamp-2">{topSponsored.excerpt}</p>
+              <div className="flex items-center gap-2 sm:gap-3 mt-3">
+                <Avatar className="h-6 w-6 sm:h-7 sm:w-7 border border-[#f97316]/20">
                   <AvatarImage src={topSponsored.author.avatar || undefined} alt={topSponsored.author.name} />
-                  <AvatarFallback className="bg-gradient-to-br from-[#f97316]/20 to-[#f59e0b]/20 text-white text-xs">
+                  <AvatarFallback className="bg-gradient-to-br from-[#f97316]/20 to-[#f59e0b]/20 text-white text-[10px]">
                     {topSponsored.author.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm text-white/40">{topSponsored.author.name}</span>
+                <span className="text-xs sm:text-sm text-white/40">{topSponsored.author.name}</span>
               </div>
             </div>
           </div>
@@ -313,8 +313,8 @@ export default function HomeFeed() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.2 }}
-        className="relative w-full overflow-hidden rounded-2xl mb-14"
-        style={{ minHeight: '50vh' }}
+        className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl mb-8 sm:mb-14"
+        style={{ minHeight: 'clamp(240px, 40vh, 50vh)' }}
       >
         <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover">
           <source src={HERO_VIDEO_URL} type="video/mp4" />
@@ -325,21 +325,21 @@ export default function HomeFeed() {
 
         <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#f97316]/25 to-transparent" />
 
-        <div className="relative z-10 flex flex-col justify-end h-full min-h-[50vh] px-6 sm:px-10 lg:px-16 pb-12 pt-24">
+        <div className="relative z-10 flex flex-col justify-end h-full px-4 sm:px-6 md:px-10 lg:px-16 pb-8 sm:pb-12 pt-16 sm:pt-24" style={{ minHeight: 'clamp(240px, 40vh, 50vh)' }}>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md w-fit mb-5 bg-[#f97316]/6 border border-[#f97316]/15"
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-md w-fit mb-3 sm:mb-5 bg-[#f97316]/6 border border-[#f97316]/15"
           >
-            <TrendingUp className="w-3.5 h-3.5 text-[#f97316]" />
-            <span className="text-xs text-[#f97316]/70 font-medium tracking-wide">Trending articles and videos from top creators</span>
+            <TrendingUp className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#f97316]" />
+            <span className="text-[10px] sm:text-xs text-[#f97316]/70 font-medium tracking-wide">Trending articles & videos</span>
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="text-5xl sm:text-6xl md:text-7xl font-black mb-4 tracking-tight leading-[0.95]"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-3 sm:mb-4 tracking-tight leading-[0.95]"
             style={{ textShadow: '0 0 60px rgba(249,115,22,0.12)' }}
           >
             <span className="gradient-text">Discover</span>
@@ -350,7 +350,7 @@ export default function HomeFeed() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="text-base sm:text-lg text-white/35 max-w-xl leading-relaxed"
+            className="text-sm sm:text-base md:text-lg text-white/35 max-w-xl leading-relaxed"
           >
             Where artists share their craft. Explore insights on design, development,
             and creative technology through articles and videos.
@@ -359,7 +359,7 @@ export default function HomeFeed() {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ delay: 0.8, duration: 1, ease: 'easeOut' }}
-            className="mt-6 h-[2px] w-32 origin-left bg-gradient-to-r from-[#f97316] via-[#f59e0b] to-transparent"
+            className="mt-4 sm:mt-6 h-[2px] w-24 sm:w-32 origin-left bg-gradient-to-r from-[#f97316] via-[#f59e0b] to-transparent"
             style={{ boxShadow: '0 0 8px rgba(249,115,22,0.3)' }}
           />
         </div>
@@ -370,81 +370,85 @@ export default function HomeFeed() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="max-w-2xl mx-auto mb-6"
+        className="max-w-2xl mx-auto mb-4 sm:mb-6"
       >
         <SearchRipple />
       </motion.div>
 
-      {/* Search Filter Tabs */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.35 }}
-        className="flex items-center justify-center gap-2 mb-4"
-      >
-        {FILTER_OPTIONS.map((opt) => {
-          const isActive = searchFilter === opt.key;
-          return (
-            <motion.button
-              key={opt.key}
-              onClick={() => handleFilterChange(opt.key)}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                isActive
-                  ? 'bg-[#f97316]/12 text-[#f97316] border border-[#f97316]/25 shadow-[0_0_12px_rgba(249,115,22,0.1)]'
-                  : 'text-white/30 hover:text-white/50 bg-white/[0.02] border border-white/5 hover:border-white/10'
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <opt.icon className="w-3 h-3" />
-              {opt.label}
-            </motion.button>
-          );
-        })}
-      </motion.div>
+      {/* Search Filter Tabs - scrollable on mobile */}
+      <div className="-mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto scrollbar-hide mb-3 sm:mb-4">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+          className="flex items-center justify-center gap-1.5 sm:gap-2 w-max min-w-full"
+        >
+          {FILTER_OPTIONS.map((opt) => {
+            const isActive = searchFilter === opt.key;
+            return (
+              <motion.button
+                key={opt.key}
+                onClick={() => handleFilterChange(opt.key)}
+                className={`flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap ${
+                  isActive
+                    ? 'bg-[#f97316]/12 text-[#f97316] border border-[#f97316]/25 shadow-[0_0_12px_rgba(249,115,22,0.1)]'
+                    : 'text-white/30 hover:text-white/50 bg-white/[0.02] border border-white/5 hover:border-white/10'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <opt.icon className="w-3 h-3" />
+                {opt.label}
+              </motion.button>
+            );
+          })}
+        </motion.div>
+      </div>
 
       {/* Category Filter */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="flex items-center justify-center gap-2 mb-12 flex-wrap"
-      >
-        {CATEGORIES.map((cat, i) => {
-          const colors = CATEGORY_COLORS[cat];
-          const isActive = activeCategory === cat;
-          return (
-            <motion.button
-              key={cat}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 + i * 0.04 }}
-              onClick={() => handleCategoryChange(cat)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                isActive
-                  ? 'text-white shadow-lg'
-                  : 'text-white/30 hover:text-white/50 bg-white/[0.02] border border-white/5 hover:border-white/10'
-              }`}
-              style={
-                isActive && colors
-                  ? { background: colors.bg, border: `1px solid ${colors.border}`, color: colors.text, boxShadow: `0 0 12px ${colors.border}, inset 0 0 12px ${colors.bg}` }
-                  : isActive
-                  ? { background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#f97316', boxShadow: '0 0 12px rgba(249,115,22,0.15), inset 0 0 12px rgba(249,115,22,0.05)' }
-                  : undefined
-              }
-            >
-              {cat}
-            </motion.button>
-          );
-        })}
-      </motion.div>
+      <div className="-mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto scrollbar-hide">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="flex items-center justify-start sm:justify-center gap-1.5 sm:gap-2 mb-8 sm:mb-12 flex-nowrap sm:flex-wrap pb-1 sm:pb-0"
+        >
+          {CATEGORIES.map((cat, i) => {
+            const colors = CATEGORY_COLORS[cat];
+            const isActive = activeCategory === cat;
+            return (
+              <motion.button
+                key={cat}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + i * 0.04 }}
+                onClick={() => handleCategoryChange(cat)}
+                className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                  isActive
+                    ? 'text-white shadow-lg'
+                    : 'text-white/30 hover:text-white/50 bg-white/[0.02] border border-white/5 hover:border-white/10'
+                }`}
+                style={
+                  isActive && colors
+                    ? { background: colors.bg, border: `1px solid ${colors.border}`, color: colors.text, boxShadow: `0 0 12px ${colors.border}, inset 0 0 12px ${colors.bg}` }
+                    : isActive
+                    ? { background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#f97316', boxShadow: '0 0 12px rgba(249,115,22,0.15), inset 0 0 12px rgba(249,115,22,0.05)' }
+                    : undefined
+                }
+              >
+                {cat}
+              </motion.button>
+            );
+          })}
+        </motion.div>
+      </div>
 
       {/* Main content area with sidebar */}
-      <div className="flex gap-8">
+      <div className="flex gap-6 sm:gap-8">
         <div className="flex-1 min-w-0">
           <LayoutGroup>
             {postsLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div key={i} className="glass-card overflow-hidden">
                     <div className="w-full animate-pulse" style={{ aspectRatio: '16/9' }}>
@@ -459,7 +463,7 @@ export default function HomeFeed() {
                 ))}
               </div>
             ) : posts.length === 0 && search ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <NoResultsCard searchQuery={search} />
               </div>
             ) : posts.length === 0 ? (
@@ -472,7 +476,7 @@ export default function HomeFeed() {
                 <button onClick={() => navigate('register')} className="mt-4 text-[#f97316] hover:underline text-sm">Sign up as an artist →</button>
               </motion.div>
             ) : (
-              <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <AnimatePresence mode="popLayout">
                   {renderPostsWithAds()}
                 </AnimatePresence>

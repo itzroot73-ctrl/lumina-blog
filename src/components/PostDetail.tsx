@@ -161,7 +161,7 @@ export default function PostDetail() {
   return (
     <div className="w-full">
       {/* Back Button */}
-      <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="fixed top-20 left-4 sm:left-8 z-40">
+      <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="fixed top-16 left-3 sm:top-20 sm:left-8 z-40">
         <button onClick={() => navigate('home')} className="flex items-center gap-2 glass-control px-3 py-2 rounded-full text-white/50 hover:text-white/80 transition-all group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span className="text-xs font-medium hidden sm:inline">Feed</span>
@@ -178,7 +178,7 @@ export default function PostDetail() {
             transition={{ duration: 0.7 }}
             className="lg:w-[55%] shrink-0"
           >
-            <div className="relative w-full overflow-hidden rounded-2xl" style={{ minHeight: isVideo ? '60vh' : '50vh' }}>
+            <div className="relative w-full overflow-hidden rounded-2xl" style={{ minHeight: isVideo ? 'clamp(220px, 40vh, 60vh)' : 'clamp(200px, 35vh, 50vh)' }}>
               {/* Video player for video posts */}
               {isVideo && currentPost.videoUrl ? (
                 <video
@@ -225,16 +225,16 @@ export default function PostDetail() {
               </div>
 
               {/* Title overlay */}
-              <div className="absolute bottom-0 left-0 right-0 z-10 p-6 sm:p-8">
-                <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-[#f97316]/8 border border-[#f97316]/20 text-[#f97316]/80 mb-4">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#f97316] mr-2 animate-pulse shadow-[0_0_6px_#f97316]" />
+              <div className="absolute bottom-0 left-0 right-0 z-10 p-4 sm:p-6 md:p-8">
+                <span className="inline-flex items-center px-2.5 sm:px-3 py-1 rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#f97316]/8 border border-[#f97316]/20 text-[#f97316]/80 mb-2 sm:mb-4">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#f97316] mr-1.5 sm:mr-2 animate-pulse shadow-[0_0_6px_#f97316]" />
                   {currentPost.category}
                 </span>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-[0.95] tracking-tight" style={{ textShadow: '0 0 40px rgba(249,115,22,0.15)' }}>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white leading-[0.95] tracking-tight" style={{ textShadow: '0 0 40px rgba(249,115,22,0.15)' }}>
                   {currentPost.title}
                 </h1>
                 {currentPost.excerpt && (
-                  <p className="text-base text-white/35 mt-3 max-w-xl leading-relaxed">{currentPost.excerpt}</p>
+                  <p className="text-sm sm:text-base text-white/35 mt-2 sm:mt-3 max-w-xl leading-relaxed">{currentPost.excerpt}</p>
                 )}
               </div>
             </div>
@@ -254,18 +254,18 @@ export default function PostDetail() {
               </h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               {infoItems.map((item, index) => (
                 <motion.div
                   key={item.label}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.3 + index * 0.06 }}
-                  className="glass-info-card p-4"
+                  className="glass-info-card p-3 sm:p-4"
                 >
-                  <div className="flex items-center gap-1.5 mb-2">
+                  <div className="flex items-center gap-1 mb-1.5 sm:mb-2">
                     <item.icon className="w-3 h-3 text-[#f97316]/40" />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/20">{item.label}</span>
+                    <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.12em] sm:tracking-[0.15em] text-white/20">{item.label}</span>
                   </div>
                   {(item as Record<string, unknown>).isAuthor ? (
                     <button onClick={() => navigate('profile', { username: currentPost.author.username })} className="flex items-center gap-2 group">
@@ -311,23 +311,23 @@ export default function PostDetail() {
             </motion.div>
 
             {/* Support + Sponsor buttons */}
-            <div className="flex gap-3 mt-1">
+            <div className="flex gap-2 sm:gap-3 mt-1">
               <Button
                 size="sm"
                 onClick={handleSupport}
-                className="flex-1 bg-gradient-to-r from-[#f97316] to-[#ea580c] hover:opacity-90 text-white border-0 font-bold rounded-full px-4 text-xs"
+                className="flex-1 bg-gradient-to-r from-[#f97316] to-[#ea580c] hover:opacity-90 text-white border-0 font-bold rounded-full px-2 sm:px-4 text-[11px] sm:text-xs h-9 sm:h-auto"
                 style={{ boxShadow: '0 0 15px rgba(249,115,22,0.25)' }}
               >
-                <Heart className="w-3.5 h-3.5 mr-1.5 fill-current" />
-                Support the Artist
+                <Heart className="w-3.5 h-3.5 mr-1 fill-current" />
+                <span className="hidden sm:inline">Support the Artist</span><span className="sm:hidden">Support</span>
               </Button>
               <Button
                 size="sm"
                 onClick={handleSponsor}
-                className="flex-1 bg-gradient-to-r from-[#f59e0b]/20 to-[#f97316]/20 hover:from-[#f59e0b]/30 hover:to-[#f97316]/30 text-[#f97316] border border-[#f97316]/20 font-bold rounded-full px-4 text-xs"
+                className="flex-1 bg-gradient-to-r from-[#f59e0b]/20 to-[#f97316]/20 hover:from-[#f59e0b]/30 hover:to-[#f97316]/30 text-[#f97316] border border-[#f97316]/20 font-bold rounded-full px-2 sm:px-4 text-[11px] sm:text-xs h-9 sm:h-auto"
               >
-                <Zap className="w-3.5 h-3.5 mr-1.5" />
-                Boost This Post
+                <Zap className="w-3.5 h-3.5 mr-1" />
+                <span className="hidden sm:inline">Boost This Post</span><span className="sm:hidden">Boost</span>
               </Button>
             </div>
 
@@ -376,7 +376,7 @@ export default function PostDetail() {
             <span className="w-6 h-px bg-[#10b981]/40" />
             The Story
           </h3>
-          <div className="glass-story-card p-6 sm:p-10 lg:p-14">
+          <div className="glass-story-card p-4 sm:p-6 md:p-10 lg:p-14">
             <div className="prose-cinematic max-w-none">
               {contentWithAd.split('<!--AD_INSERT-->').map((part, i) => (
                 <div key={i}>

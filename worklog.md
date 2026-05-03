@@ -20,3 +20,28 @@ Stage Summary:
 - Build successful, dev server verified
 - Color scheme: #060610 dark, #00f0ff cyan, #a855f7 purple, #10b981 emerald
 - Brand: "Lumin" with 'L' logo
+
+---
+Task ID: mobile-ui-fix
+Agent: Main
+Task: Fix mobile UI across all components
+
+Work Log:
+- Added mobile hamburger menu to Navbar using shadcn Sheet component
+- Fixed LandingPage: reduced hero text, hidden floating cards on mobile, responsive CTA
+- Fixed PostDetail: clamp() for video height, responsive title/padding, mobile button labels
+- Fixed Dashboard: scrollable tabs, stacked wallet card, responsive header
+- Fixed PostEditor: stacked toolbar, flex-wrap controls, smaller textarea
+- Fixed HomeFeed: clamp() hero heights, scrollable filter/category pills, responsive grid
+- Fixed SponsorPopup: full-width on mobile
+- Fixed SearchRipple: reduced top padding, scrollable filter tabs
+- Added mobile CSS utilities: scrollbar-hide, safe-area, touch improvements, performance
+- Added showSearchOverlay to Zustand store
+- Build passes successfully
+
+Stage Summary:
+- All major mobile UI issues resolved across 9 components
+- Mobile hamburger menu with Sheet component
+- Responsive breakpoints using sm:/md:/lg: consistently
+- Touch improvements (44px min targets, no hover effects on mobile)
+- Build verified successfully

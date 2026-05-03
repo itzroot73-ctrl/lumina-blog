@@ -83,23 +83,24 @@ export default function PostEditor({ post, postType = 'article', onSaveComplete 
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 sm:space-y-6">
+      {/* Header - stack on mobile */}
+      <div className="flex flex-col gap-3">
+        {/* Row 1: Title + type toggle */}
         <div className="flex items-center gap-3">
-          <h2 className="text-xl font-bold text-white">{post ? 'Edit' : 'New'} {type === 'video' ? 'Video' : 'Article'}</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-white">{post ? 'Edit' : 'New'} {type === 'video' ? 'Video' : 'Article'}</h2>
           {/* Post Type Toggle */}
           {!post && (
             <div className="flex items-center gap-1 glass rounded-lg p-1">
               <button
                 onClick={() => setType('article')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${type === 'article' ? 'bg-[#f97316]/15 text-[#f97316]' : 'text-white/30 hover:text-white/50'}`}
+                className={`flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all ${type === 'article' ? 'bg-[#f97316]/15 text-[#f97316]' : 'text-white/30 hover:text-white/50'}`}
               >
                 <FileText className="w-3 h-3" />Article
               </button>
               <button
                 onClick={() => setType('video')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${type === 'video' ? 'bg-[#a855f7]/15 text-[#a855f7]' : 'text-white/30 hover:text-white/50'}`}
+                className={`flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all ${type === 'video' ? 'bg-[#a855f7]/15 text-[#a855f7]' : 'text-white/30 hover:text-white/50'}`}
               >
                 <Video className="w-3 h-3" />Video
               </button>
@@ -107,33 +108,34 @@ export default function PostEditor({ post, postType = 'article', onSaveComplete 
           )}
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 glass rounded-lg p-1">
-            <button onClick={() => setShowPreview(false)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all ${!showPreview ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/60'}`}>
-              <Edit3 className="w-3.5 h-3.5" />Edit
+        {/* Row 2: Edit/Preview toggle + Published switch + Save button - wraps on mobile */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1 glass rounded-lg p-1">
+            <button onClick={() => setShowPreview(false)} className={`flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${!showPreview ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/60'}`}>
+              <Edit3 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />Edit
             </button>
-            <button onClick={() => setShowPreview(true)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all ${showPreview ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/60'}`}>
-              <Eye className="w-3.5 h-3.5" />Preview
+            <button onClick={() => setShowPreview(true)} className={`flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${showPreview ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/60'}`}>
+              <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5" />Preview
             </button>
           </div>
           <div className="flex items-center gap-2">
             <Switch checked={published} onCheckedChange={setPublished} className="data-[state=checked]:bg-[#10b981]" />
-            <span className="text-sm text-white/60">{published ? 'Published' : 'Draft'}</span>
+            <span className="text-xs sm:text-sm text-white/60">{published ? 'Published' : 'Draft'}</span>
           </div>
-          <Button onClick={handleSave} disabled={saving} className={`border-0 ${type === 'video' ? 'bg-gradient-to-r from-[#a855f7] to-[#7c3aed]' : 'bg-gradient-to-r from-[#f97316] to-[#f59e0b]'} hover:opacity-90 text-white`}>
-            {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : published ? <><Send className="w-4 h-4 mr-1.5" />Publish</> : <><Save className="w-4 h-4 mr-1.5" />Save Draft</>}
+          <Button onClick={handleSave} disabled={saving} size="sm" className={`border-0 ml-auto text-xs sm:text-sm ${type === 'video' ? 'bg-gradient-to-r from-[#a855f7] to-[#7c3aed]' : 'bg-gradient-to-r from-[#f97316] to-[#f59e0b]'} hover:opacity-90 text-white`}>
+            {saving ? <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : published ? <><Send className="w-3.5 h-3.5 mr-1" />Publish</> : <><Save className="w-3.5 h-3.5 mr-1" />Save</>}
           </Button>
         </div>
       </div>
 
       {showPreview ? (
-        <div className="glass-card p-8">
+        <div className="glass-card p-4 sm:p-8">
           <div className="prose-dark max-w-none">
             <div className="flex items-center gap-3 mb-4">
-              <h1 className="text-3xl font-bold text-[#f97316]">{title || 'Untitled'}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#f97316]">{title || 'Untitled'}</h1>
               {type === 'video' && <span className="glass-video-badge"><Video className="w-3 h-3" />VIDEO</span>}
             </div>
-            {excerpt && <p className="text-lg text-white/50 italic mb-6">{excerpt}</p>}
+            {excerpt && <p className="text-base sm:text-lg text-white/50 italic mb-6">{excerpt}</p>}
             {type === 'video' && videoUrl && (
               <div className="mb-8 relative rounded-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
                 <video src={videoUrl} className="w-full h-full object-cover" poster={thumbnail || undefined} controls />
@@ -150,7 +152,7 @@ export default function PostEditor({ post, postType = 'article', onSaveComplete 
               {type === 'video' ? <Video className="w-3.5 h-3.5" /> : <FileText className="w-3.5 h-3.5" />}
               {type === 'video' ? 'Video Title' : 'Article Title'}
             </Label>
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={type === 'video' ? 'Enter video title...' : 'Enter article title...'} className="glass-input h-12 text-lg text-white placeholder:text-white/25" />
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={type === 'video' ? 'Enter video title...' : 'Enter article title...'} className="glass-input h-10 sm:h-12 text-base sm:text-lg text-white placeholder:text-white/25" />
           </div>
 
           <div className="space-y-2">
@@ -178,7 +180,7 @@ export default function PostEditor({ post, postType = 'article', onSaveComplete 
                 const isActive = category === cat;
                 return (
                   <button key={cat} type="button" onClick={() => setCategory(cat)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${isActive ? '' : 'border border-white/10 bg-white/5 text-white/40 hover:border-white/20'}`}
+                    className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${isActive ? '' : 'border border-white/10 bg-white/5 text-white/40 hover:border-white/20'}`}
                     style={isActive && colors ? { background: colors.bg, color: colors.text, border: `1px solid ${colors.border}` } : undefined}
                   >
                     {cat}
@@ -203,7 +205,7 @@ export default function PostEditor({ post, postType = 'article', onSaveComplete 
               <Label className="text-white/70 text-sm">{type === 'video' ? 'Description / Show Notes (Markdown)' : 'Content (Markdown)'}</Label>
               <span className="text-xs text-white/30">~{estimatedReadingTime} min {type === 'video' ? 'watch' : 'read'}</span>
             </div>
-            <Textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder={type === 'video' ? 'Write video description, timestamps, credits...' : 'Write your post content in Markdown...'} className="glass-input min-h-[400px] text-white placeholder:text-white/25 font-mono text-sm leading-relaxed resize-y" />
+            <Textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder={type === 'video' ? 'Write video description, timestamps, credits...' : 'Write your post content in Markdown...'} className="glass-input min-h-[280px] sm:min-h-[400px] text-white placeholder:text-white/25 font-mono text-sm leading-relaxed resize-y" />
           </div>
         </div>
       )}

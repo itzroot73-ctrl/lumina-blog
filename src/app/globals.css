@@ -769,3 +769,64 @@ html {
   margin: 1.5rem 0;
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
+
+/* ========================================
+   Mobile Utilities
+   ======================================== */
+
+/* Hide scrollbar for horizontal scroll areas */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile safe area for notched phones */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Prevent horizontal overflow on mobile */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Touch improvements */
+@media (pointer: coarse) {
+  .glass-card:hover {
+    transform: none;
+  }
+
+  button, a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Larger touch targets */
+  .nav-link-item {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Mobile-specific glass card - no hover transform */
+@media (max-width: 767px) {
+  .glass-card:hover {
+    transform: none;
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+  }
+
+  /* Reduce backdrop-filter complexity for performance on mobile */
+  .glass-card {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}

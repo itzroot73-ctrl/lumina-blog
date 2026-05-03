@@ -187,6 +187,10 @@ interface AppState {
   searchFilter: SearchFilter;
   setSearchFilter: (filter: SearchFilter) => void;
 
+  // Search Overlay
+  showSearchOverlay: boolean;
+  setShowSearchOverlay: (v: boolean) => void;
+
   // Earnings Dashboard
   earningsData: { totalDonationIncome: number; totalSponsorshipIncome: number; platformCommission: number; walletBalance: number; recentTransactions: { id: string; type: string; amount: number; description: string; createdAt: string }[] } | null;
   loadEarnings: () => Promise<void>;
@@ -565,6 +569,9 @@ export const useAppStore = create<AppState>((set, get) => ({
   // Search Filters
   searchFilter: 'all',
   setSearchFilter: (filter) => set({ searchFilter: filter }),
+
+  showSearchOverlay: false,
+  setShowSearchOverlay: (v) => set({ showSearchOverlay: v }),
 
   // Earnings Dashboard
   earningsData: null,

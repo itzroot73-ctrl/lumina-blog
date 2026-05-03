@@ -10,15 +10,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { PenSquare, User, LogOut, Crown, Rss, Wallet } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet';
+import { PenSquare, User, LogOut, Crown, Rss, Wallet, Menu, X, Home, Search } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Navbar() {
-  const { user, isAuthenticated, logout, navigate, setShowPremiumModal } = useAppStore();
+  const { user, isAuthenticated, logout, navigate, setShowPremiumModal, setShowSearchOverlay } = useAppStore();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isPremium = user?.isPremium ?? false;
 
   const handleLogoClick = () => {
     navigate(isAuthenticated ? 'home' : 'browse');
+    setMobileMenuOpen(false);
   };
 
   return (
@@ -28,7 +38,7 @@ export default function Navbar() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
-          {/* Logo — Lumin branding with logo image */}
+          {/* Logo — Lumina branding with logo image */}
           <button
             onClick={handleLogoClick}
             className="flex items-center gap-3 group cursor-pointer"
@@ -40,15 +50,15 @@ export default function Navbar() {
             </span>
           </button>
 
-          {/* Navigation — Orange & Black minimal style */}
-          <div className="flex items-center gap-1">
+          {/* Desktop Navigation — hidden on mobile */}
+          <div className="hidden md:flex items-center gap-1">
             {/* Feed nav item */}
             <button
               onClick={() => navigate(isAuthenticated ? 'home' : 'browse')}
               className="nav-link-item group"
             >
               <Rss className="w-3.5 h-3.5 text-[#f97316]/40 group-hover:text-[#f97316] transition-colors" />
-              <span className="hidden sm:inline text-white/50 group-hover:text-white/80 transition-colors">Feed</span>
+              <span className="text-white/50 group-hover:text-white/80 transition-colors">Feed</span>
             </button>
 
             {isAuthenticated && user?.role === 'artist' && (
@@ -57,7 +67,7 @@ export default function Navbar() {
                 className="nav-link-item group"
               >
                 <PenSquare className="w-3.5 h-3.5 text-[#f59e0b]/40 group-hover:text-[#f59e0b] transition-colors" />
-                <span className="hidden sm:inline text-white/50 group-hover:text-white/80 transition-colors">Write</span>
+                <span className="text-white/50 group-hover:text-white/80 transition-colors">Write</span>
               </button>
             )}
 
@@ -69,7 +79,7 @@ export default function Navbar() {
                 className="relative bg-gradient-to-r from-[#f97316]/20 to-[#f59e0b]/20 hover:from-[#f97316]/30 hover:to-[#f59e0b]/30 text-white border border-[#f97316]/20 hover:border-[#f97316]/40 font-bold h-7 text-[11px] px-3 rounded-full transition-all"
               >
                 <Crown className="w-3 h-3 mr-1 text-[#f59e0b]" />
-                <span className="hidden sm:inline">Premium</span>
+                <span>Premium</span>
               </Button>
             )}
 
@@ -77,7 +87,7 @@ export default function Navbar() {
             {isPremium && (
               <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#f59e0b]/10 to-[#f97316]/10 border border-[#f59e0b]/20">
                 <Crown className="w-3 h-3 text-[#f59e0b]" />
-                <span className="text-[10px] font-bold text-[#f59e0b] hidden sm:inline">PRO</span>
+                <span className="text-[10px] font-bold text-[#f59e0b]">PRO</span>
               </div>
             )}
 
@@ -170,8 +180,135 @@ export default function Navbar() {
               </div>
             )}
           </div>
+
+          {/* Mobile: right side icons + hamburger */}
+          <div className="flex md:hidden items-center gap-1">
+            {/* Search icon for mobile */}
+            <button
+              onClick={() => setShowSearchOverlay(true)}
+              className="nav-link-item group"
+            >
+              <Search className="w-4 h-4 text-[#f97316]/40 group-hover:text-[#f97316] transition-colors" />
+            </button>
+
+            {/* Authenticated: just avatar + hamburger */}
+            {isAuthenticated ? (
+              <>
+                <button
+                  onClick={() => setMobileMenuOpen(true)}
+                  className="nav-link-item"
+                >
+                  <Menu className="w-5 h-5 text-white/60" />
+                </button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('login')}
+                  className="text-white/40 hover:text-white/70 hover:bg-white/5 h-7 text-xs px-2 rounded-full"
+                >
+                  Sign in
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => navigate('register')}
+                  className="bg-gradient-to-r from-[#f97316] to-[#f59e0b] hover:opacity-90 text-white border-0 h-7 text-xs px-3 rounded-full font-semibold"
+                >
+                  Sign up
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* ====== MOBILE SHEET MENU ====== */}
+      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+        <SheetContent side="right" className="glass-nav-cinematic border-l border-[#f97316]/10 w-[280px] p-0">
+          <SheetHeader className="p-5 pb-3 border-b border-white/5">
+            <SheetTitle className="text-white flex items-center gap-3">
+              <Avatar className="h-10 w-10 border-2 border-[#f97316]/30">
+                <AvatarImage src={user?.avatar || undefined} alt={user?.name || 'User'} />
+                <AvatarFallback className="bg-gradient-to-br from-[#f97316]/20 to-[#f59e0b]/20 text-white text-sm font-bold">
+                  {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <div className="text-left">
+                <p className="text-sm font-bold text-white">{user?.name}</p>
+                <p className="text-xs text-white/40">@{user?.username}</p>
+              </div>
+            </SheetTitle>
+            <SheetDescription className="sr-only">Navigation menu</SheetDescription>
+          </SheetHeader>
+
+          {/* Premium badge */}
+          {isPremium && (
+            <div className="mx-5 mt-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-[#f59e0b]/10 to-[#f97316]/10 border border-[#f59e0b]/20">
+              <Crown className="w-4 h-4 text-[#f59e0b]" />
+              <span className="text-xs font-bold text-[#f59e0b]">Premium Member</span>
+            </div>
+          )}
+
+          {/* Wallet info */}
+          <div className="mx-5 mt-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-[#10b981]/5 border border-[#10b981]/10">
+            <Wallet className="w-4 h-4 text-[#10b981]" />
+            <span className="text-xs font-bold text-[#10b981]">${user?.walletBalance?.toFixed(2) || '0.00'}</span>
+            <span className="text-[10px] text-white/20">Wallet Balance</span>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="flex flex-col gap-1 p-4">
+            <button
+              onClick={() => { navigate('home'); setMobileMenuOpen(false); }}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all"
+            >
+              <Home className="w-5 h-5 text-[#f97316]/50" />
+              <span className="text-sm font-medium">Feed</span>
+            </button>
+
+            {isAuthenticated && user?.role === 'artist' && (
+              <button
+                onClick={() => { navigate('dashboard'); setMobileMenuOpen(false); }}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all"
+              >
+                <PenSquare className="w-5 h-5 text-[#f59e0b]/50" />
+                <span className="text-sm font-medium">Dashboard / Write</span>
+              </button>
+            )}
+
+            <button
+              onClick={() => { navigate('profile', { username: user?.username || '' }); setMobileMenuOpen(false); }}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:text-white hover:bg-white/5 transition-all"
+            >
+              <User className="w-5 h-5 text-white/30" />
+              <span className="text-sm font-medium">My Profile</span>
+            </button>
+
+            {!isPremium && (
+              <button
+                onClick={() => { setShowPremiumModal(true); setMobileMenuOpen(false); }}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-[#f59e0b]/70 hover:text-[#f59e0b] hover:bg-[#f59e0b]/5 transition-all"
+              >
+                <Crown className="w-5 h-5 text-[#f59e0b]/50" />
+                <span className="text-sm font-medium">Go Premium</span>
+              </button>
+            )}
+          </nav>
+
+          {/* Bottom actions */}
+          <div className="mt-auto p-4 border-t border-white/5">
+            <button
+              onClick={() => { logout(); setMobileMenuOpen(false); }}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400/60 hover:text-red-400 hover:bg-red-400/5 transition-all w-full"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="text-sm font-medium">Log out</span>
+            </button>
+          </div>
+        </SheetContent>
+      </Sheet>
     </nav>
   );
 }

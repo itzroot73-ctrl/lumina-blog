@@ -66,7 +66,7 @@ export default function SearchRipple() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="fixed inset-0 z-[200] flex items-start justify-center pt-[15vh]"
+            className="fixed inset-0 z-[200] flex items-start justify-center pt-[8vh] sm:pt-[15vh]"
           >
             {/* Backdrop with ripple darkening */}
             <motion.div
@@ -118,7 +118,7 @@ export default function SearchRipple() {
               </div>
 
               {/* Filter Tabs */}
-              <div className="flex items-center gap-2 mt-4 justify-center">
+              <div className="flex items-center gap-1.5 sm:gap-2 mt-3 sm:mt-4 justify-center overflow-x-auto scrollbar-hide px-2">
                 {FILTER_OPTIONS.map((opt) => {
                   const isActive = searchFilter === opt.key;
                   return (

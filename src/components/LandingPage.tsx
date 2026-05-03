@@ -23,7 +23,10 @@ const STATS = [
   { value: '$2.4M', label: 'Creator Earnings' },
 ];
 
-function FloatingGlassCard({ post, index }: { post: { title: string; author: string; category: string }; index: number }) {
+function FloatingGlassCard({ post, index, isMobile }: { post: { title: string; author: string; category: string }; index: number; isMobile: boolean }) {
+  // On mobile, hide floating cards to avoid clutter
+  if (isMobile) return null;
+
   const depth = 0.3 + index * 0.15;
   return (
     <motion.div
@@ -102,7 +105,7 @@ function LiquidCTAButton({ onClick }: { onClick: () => void }) {
         onClick={onClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="group relative h-16 px-12 text-lg font-bold rounded-full bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white border-0 cursor-pointer overflow-hidden"
+        className="group relative h-12 sm:h-16 px-6 sm:px-12 text-sm sm:text-lg font-bold rounded-full bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white border-0 cursor-pointer overflow-hidden"
         style={{
           filter: isHovered ? 'url(#liquid-metal)' : 'none',
           boxShadow: '0 0 40px rgba(249,115,22,0.35), 0 0 80px rgba(249,115,22,0.12), 0 8px 30px rgba(0,0,0,0.4)',
@@ -127,9 +130,9 @@ function LiquidCTAButton({ onClick }: { onClick: () => void }) {
           transition={{ duration: 0.8, ease: 'easeInOut' }}
         />
 
-        <span className="relative flex items-center gap-3">
-          <span className="tracking-[0.2em] uppercase text-sm font-black">Enter the Lumina</span>
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
+        <span className="relative flex items-center gap-2 sm:gap-3">
+          <span className="tracking-[0.15em] sm:tracking-[0.2em] uppercase text-xs sm:text-sm font-black">Enter the Lumina</span>
+          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-2 transition-transform duration-300" />
         </span>
       </motion.button>
     </div>
@@ -140,12 +143,21 @@ export default function LandingPage() {
   const { navigate } = useAppStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const luminaRef = useRef<HTMLHeadingElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end start'] });
 
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
   const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -100]);
-  const letterSpacing = useTransform(scrollYProgress, [0, 0.25], [0, 40]);
+  const letterSpacing = useTransform(scrollYProgress, [0, 0.25], [0, isMobile ? 12 : 40]);
   const taglineOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
   // GSAP scroll animations
@@ -173,20 +185,22 @@ export default function LandingPage() {
         }}
       );
 
-      // Parallax depth for floating cards
-      gsap.to('.floating-card-layer', {
-        y: -60,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1,
-        }
-      });
+      // Parallax depth for floating cards (desktop only)
+      if (!isMobile) {
+        gsap.to('.floating-card-layer', {
+          y: -60,
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+          }
+        });
+      }
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isMobile]);
 
   const floatingPosts = [
     { title: 'The Art of Glassmorphism in Modern Web Design', author: 'Luna Chen', category: 'Design' },
@@ -195,7 +209,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div ref={containerRef} className="relative min-h-[300vh] overflow-hidden">
+    <div ref={containerRef} className={`relative overflow-hidden ${isMobile ? 'min-h-[200vh]' : 'min-h-[300vh]'}`}>
       {/* ====== HERO SECTION (Pinned) ====== */}
       <motion.div
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
@@ -232,34 +246,36 @@ export default function LandingPage() {
         {/* Radial orange glow behind LUMINA text */}
         <div className="absolute inset-0 pointer-events-none">
           <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full opacity-[0.06]"
-            style={{ background: 'radial-gradient(circle, #f97316 0%, transparent 60%)' }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.06]"
+            style={{ width: isMobile ? '400px' : '900px', height: isMobile ? '400px' : '900px', background: 'radial-gradient(circle, #f97316 0%, transparent 60%)' }}
           />
         </div>
 
         {/* Bottom accent line */}
         <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#f97316]/25 to-transparent" />
 
-        {/* Floating Glass Cards in 3D space */}
-        <div className="floating-card-layer absolute inset-0 pointer-events-none">
-          {floatingPosts.map((post, i) => (
-            <FloatingGlassCard key={i} post={post} index={i} />
-          ))}
-        </div>
+        {/* Floating Glass Cards in 3D space (desktop only) */}
+        {!isMobile && (
+          <div className="floating-card-layer absolute inset-0 pointer-events-none">
+            {floatingPosts.map((post, i) => (
+              <FloatingGlassCard key={i} post={post} index={i} isMobile={false} />
+            ))}
+          </div>
+        )}
 
         {/* ====== MAIN HERO CONTENT ====== */}
-        <div className="relative z-20 flex flex-col items-center justify-center min-h-screen px-6 text-center">
+        <div className="relative z-20 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 text-center">
           {/* LUMINA Typography — Letter spacing expands on scroll */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="mb-6"
+            className="mb-4 sm:mb-6"
           >
             <motion.h1
               ref={luminaRef}
               style={{ letterSpacing }}
-              className="text-7xl sm:text-[8rem] md:text-[10rem] lg:text-[12rem] font-black tracking-tight leading-none select-none"
+              className="text-5xl sm:text-7xl md:text-[8rem] lg:text-[10rem] xl:text-[12rem] font-black tracking-tight leading-none select-none"
             >
               <span
                 className="text-transparent bg-clip-text bg-gradient-to-r from-[#f97316] via-[#fb923c] to-[#f59e0b]"
@@ -276,7 +292,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.8 }}
-            className="text-lg sm:text-xl text-white/30 font-light tracking-[0.15em] max-w-xl mx-auto mb-10 uppercase"
+            className="text-sm sm:text-lg text-white/30 font-light tracking-[0.1em] sm:tracking-[0.15em] max-w-xs sm:max-w-xl mx-auto mb-6 sm:mb-10 uppercase"
           >
             Where creators shine. Stories that illuminate.
           </motion.p>
@@ -295,18 +311,18 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.5, duration: 0.6 }}
-            className="mt-6 flex items-center gap-6"
+            className="mt-4 sm:mt-6 flex items-center gap-4 sm:gap-6"
           >
             <button
               onClick={() => navigate('register')}
-              className="text-sm text-white/40 hover:text-[#f97316]/80 transition-colors font-medium tracking-wide"
+              className="text-xs sm:text-sm text-white/40 hover:text-[#f97316]/80 transition-colors font-medium tracking-wide"
             >
               Create Account
             </button>
             <span className="text-white/10">|</span>
             <button
               onClick={() => navigate('browse')}
-              className="text-sm text-white/40 hover:text-white/60 transition-colors font-medium tracking-wide"
+              className="text-xs sm:text-sm text-white/40 hover:text-white/60 transition-colors font-medium tracking-wide"
             >
               Browse as Guest
             </button>
@@ -317,7 +333,7 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 2.5, duration: 1 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2"
+            className="absolute bottom-8 sm:bottom-10 left-1/2 -translate-x-1/2"
           >
             <motion.div
               animate={{ y: [0, 8, 0] }}
@@ -337,19 +353,19 @@ export default function LandingPage() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: '-100px' }}
         transition={{ duration: 1.2 }}
-        className="relative min-h-screen bg-[#0a0a0a]"
+        className="relative bg-[#0a0a0a]"
       >
         {/* Vertical Wipe Transition Bar */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#f97316]/30 to-transparent" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24">
           {/* Section Label */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="mb-12"
+            className="mb-8 sm:mb-12"
           >
             <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-white/20 flex items-center gap-3">
               <span className="w-8 h-px bg-[#f97316]/30" />
@@ -358,7 +374,7 @@ export default function LandingPage() {
           </motion.div>
 
           {/* Split Layout */}
-          <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             {/* LEFT: Featured Video Preview */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -369,7 +385,7 @@ export default function LandingPage() {
             >
               <div
                 className="relative w-full overflow-hidden rounded-2xl"
-                style={{ minHeight: '60vh' }}
+                style={{ minHeight: isMobile ? '40vh' : '60vh' }}
               >
                 <video
                   autoPlay
@@ -394,8 +410,8 @@ export default function LandingPage() {
                 />
 
                 {/* Sponsored Badge */}
-                <div className="absolute top-4 right-4 z-20">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider sponsored-glow"
+                <div className="absolute top-3 sm:top-4 right-3 sm:right-4 z-20">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider"
                     style={{
                       background: 'rgba(249,115,22,0.12)',
                       border: '1px solid rgba(249,115,22,0.25)',
@@ -410,8 +426,8 @@ export default function LandingPage() {
 
                 {/* Play Icon */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-20 h-20 rounded-full bg-[#f97316]/15 backdrop-blur-sm border border-[#f97316]/25 flex items-center justify-center">
-                    <div className="w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-l-[16px] border-l-[#f97316] ml-1" />
+                  <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-[#f97316]/15 backdrop-blur-sm border border-[#f97316]/25 flex items-center justify-center">
+                    <div className="w-0 h-0 border-t-[8px] sm:border-t-[10px] border-t-transparent border-b-[8px] sm:border-b-[10px] border-b-transparent border-l-[12px] sm:border-l-[16px] border-l-[#f97316] ml-0.5 sm:ml-1" />
                   </div>
                 </div>
 
@@ -419,14 +435,14 @@ export default function LandingPage() {
                 <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#f97316]/30 to-transparent" />
 
                 {/* Title Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 z-10 p-8">
-                  <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-[#f97316]/10 border border-[#f97316]/20 text-[#f97316]/80 mb-3">
+                <div className="absolute bottom-0 left-0 right-0 z-10 p-4 sm:p-8">
+                  <span className="inline-flex items-center px-2.5 sm:px-3 py-1 rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-[#f97316]/10 border border-[#f97316]/20 text-[#f97316]/80 mb-2 sm:mb-3">
                     Featured
                   </span>
-                  <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight" style={{ textShadow: '0 0 40px rgba(249,115,22,0.15)' }}>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-tight" style={{ textShadow: '0 0 40px rgba(249,115,22,0.15)' }}>
                     The Art of Glassmorphism
                   </h2>
-                  <p className="text-base text-white/35 mt-2 max-w-lg">Exploring how frosted glass effects are transforming digital interfaces and creating depth in flat design.</p>
+                  <p className="text-sm sm:text-base text-white/35 mt-1 sm:mt-2 max-w-lg">Exploring how frosted glass effects are transforming digital interfaces and creating depth in flat design.</p>
                 </div>
               </div>
             </motion.div>
@@ -437,9 +453,9 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="lg:w-[42%] flex flex-col justify-center gap-4"
+              className="lg:w-[42%] flex flex-col justify-center gap-3 sm:gap-4"
             >
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 {[
                   { label: 'AUTHOR', value: 'Luna Chen', sub: '@lunachen' },
                   { label: 'PUBLISHED', value: 'Mar 2026' },
@@ -454,23 +470,23 @@ export default function LandingPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.4 + index * 0.08, duration: 0.5 }}
-                    className="glass-info-card p-4"
+                    className="glass-info-card p-3 sm:p-4"
                   >
-                    <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/20 block mb-2">
+                    <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] text-white/20 block mb-1.5 sm:mb-2">
                       {item.label}
                     </span>
-                    <p className={`text-sm font-semibold ${item.highlight ? 'text-[#10b981]' : item.accent ? 'text-[#f97316]' : 'text-white'}`}>
+                    <p className={`text-xs sm:text-sm font-semibold ${item.highlight ? 'text-[#10b981]' : item.accent ? 'text-[#f97316]' : 'text-white'}`}>
                       {item.value}
                     </p>
-                    {item.sub && <p className="text-[10px] text-white/25 mt-0.5">{item.sub}</p>}
+                    {item.sub && <p className="text-[9px] sm:text-[10px] text-white/25 mt-0.5">{item.sub}</p>}
                   </motion.div>
                 ))}
               </div>
 
               {/* Donation transparency note */}
-              <div className="flex items-start gap-2 p-3 rounded-lg bg-[#f97316]/5 border border-[#f97316]/10 mt-2">
-                <Shield className="w-4 h-4 text-[#f97316]/40 shrink-0 mt-0.5" />
-                <p className="text-[11px] text-white/25 leading-relaxed">
+              <div className="flex items-start gap-2 p-2.5 sm:p-3 rounded-lg bg-[#f97316]/5 border border-[#f97316]/10 mt-1 sm:mt-2">
+                <Shield className="w-3.5 h-3.5 text-[#f97316]/40 shrink-0 mt-0.5" />
+                <p className="text-[10px] sm:text-[11px] text-white/25 leading-relaxed">
                   80% of your support goes directly to the creator. 20% helps keep Lumina free for everyone.
                 </p>
               </div>
@@ -480,15 +496,15 @@ export default function LandingPage() {
       </motion.div>
 
       {/* ====== STATS SECTION ====== */}
-      <div className="stats-section py-20 bg-[#0a0a0a] relative">
+      <div className="stats-section py-12 sm:py-20 bg-[#0a0a0a] relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-3 gap-4 sm:gap-8">
             {STATS.map((stat, i) => (
               <div key={i} className="stat-item text-center">
-                <p className="text-4xl sm:text-5xl font-black text-[#f97316] mb-2" style={{ textShadow: '0 0 30px rgba(249,115,22,0.2)' }}>
+                <p className="text-2xl sm:text-4xl md:text-5xl font-black text-[#f97316] mb-1 sm:mb-2" style={{ textShadow: '0 0 30px rgba(249,115,22,0.2)' }}>
                   {stat.value}
                 </p>
-                <p className="text-sm text-white/30 uppercase tracking-[0.15em]">{stat.label}</p>
+                <p className="text-[10px] sm:text-sm text-white/30 uppercase tracking-[0.1em] sm:tracking-[0.15em]">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -496,25 +512,25 @@ export default function LandingPage() {
       </div>
 
       {/* ====== FEATURES SECTION ====== */}
-      <div className="features-section py-24 bg-[#0a0a0a] relative">
+      <div className="features-section py-16 sm:py-24 bg-[#0a0a0a] relative">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl sm:text-4xl font-black text-white text-center mb-16"
+            className="text-2xl sm:text-3xl md:text-4xl font-black text-white text-center mb-10 sm:mb-16"
           >
             Built for <span className="text-[#f97316]">Creators</span>
           </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {FEATURES.map((feature, i) => (
               <div key={i} className="feature-card">
-                <div className="glass-card p-8 h-full text-center">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f97316]/10 to-[#f59e0b]/10 border border-[#f97316]/10 flex items-center justify-center mx-auto mb-5">
-                    <feature.icon className="w-6 h-6 text-[#f97316]/60" />
+                <div className="glass-card p-6 sm:p-8 h-full text-center">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-[#f97316]/10 to-[#f59e0b]/10 border border-[#f97316]/10 flex items-center justify-center mx-auto mb-4 sm:mb-5">
+                    <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-[#f97316]/60" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-3">{feature.label}</h3>
-                  <p className="text-sm text-white/35 leading-relaxed">{feature.desc}</p>
+                  <h3 className="text-base sm:text-lg font-bold text-white mb-2 sm:mb-3">{feature.label}</h3>
+                  <p className="text-xs sm:text-sm text-white/35 leading-relaxed">{feature.desc}</p>
                 </div>
               </div>
             ))}
