@@ -382,6 +382,28 @@ html {
   50% { opacity: 0.35; }
 }
 
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(249, 115, 22, 0.3),
+                0 0 15px rgba(249, 115, 22, 0.15),
+                0 0 30px rgba(249, 115, 22, 0.08),
+                inset 0 0 8px rgba(249, 115, 22, 0.05);
+    border-color: rgba(249, 115, 22, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.5),
+                0 0 25px rgba(249, 115, 22, 0.25),
+                0 0 50px rgba(249, 115, 22, 0.12),
+                inset 0 0 15px rgba(249, 115, 22, 0.08);
+    border-color: rgba(249, 115, 22, 0.6);
+  }
+}
+
+@keyframes typewriter-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
@@ -397,6 +419,88 @@ html {
 
 .animate-heart-pulse {
   animation: heart-pulse 0.4s ease-in-out;
+}
+
+.animate-neon-pulse {
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+/* ========================================
+   Sponsored Content Styles
+   ======================================== */
+
+.sponsored-glow {
+  animation: neon-pulse 2s ease-in-out infinite;
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  position: relative;
+}
+
+.sponsored-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), transparent 40%, transparent 60%, rgba(249, 115, 22, 0.1));
+  z-index: -1;
+  pointer-events: none;
+}
+
+.glass-sponsored-badge {
+  background: rgba(249, 115, 22, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  border-radius: 0.5rem;
+  color: #f97316;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-shadow: 0 0 8px rgba(249, 115, 22, 0.4);
+}
+
+.glass-video-badge {
+  background: rgba(168, 85, 247, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 0.5rem;
+  color: #a855f7;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.glass-earnings-card {
+  background: rgba(16, 185, 129, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(16, 185, 129, 0.12);
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.glass-earnings-card:hover {
+  border-color: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.06);
+}
+
+.glass-wallet-card {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.08), rgba(245, 158, 11, 0.04));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(249, 115, 22, 0.15);
+  border-radius: 1rem;
+  box-shadow: 0 0 30px rgba(249, 115, 22, 0.04);
 }
 
 /* ========================================

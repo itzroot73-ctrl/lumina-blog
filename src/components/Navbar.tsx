@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { PenSquare, User, LogOut, Crown, Rss } from 'lucide-react';
+import { PenSquare, User, LogOut, Crown, Rss, Wallet } from 'lucide-react';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout, navigate, setShowPremiumModal } = useAppStore();
@@ -103,11 +103,16 @@ export default function Navbar() {
                   <div className="px-3 py-2">
                     <p className="text-sm font-semibold text-white">{user?.name}</p>
                     <p className="text-xs text-white/40">@{user?.username}</p>
-                    {isPremium && (
-                      <span className="inline-flex items-center gap-1 mt-1 text-[10px] text-[#f59e0b] font-bold">
-                        <Crown className="w-3 h-3" /> Premium
+                    <div className="flex items-center gap-2 mt-1">
+                      {isPremium && (
+                        <span className="inline-flex items-center gap-1 text-[10px] text-[#f59e0b] font-bold">
+                          <Crown className="w-3 h-3" /> Premium
+                        </span>
+                      )}
+                      <span className="inline-flex items-center gap-1 text-[10px] text-[#10b981] font-bold">
+                        <Wallet className="w-3 h-3" /> ${user?.walletBalance?.toFixed(2) || '0.00'}
                       </span>
-                    )}
+                    </div>
                   </div>
                   <DropdownMenuSeparator className="bg-white/5" />
                   <DropdownMenuItem

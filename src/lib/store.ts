@@ -7,8 +7,10 @@ export interface User {
   username: string;
   bio?: string | null;
   avatar?: string | null;
+  coverImage?: string | null;
   role: string;
   isPremium: boolean;
+  walletBalance: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -28,6 +30,8 @@ export interface Post {
   excerpt?: string | null;
   content: string;
   thumbnail?: string | null;
+  videoUrl?: string | null;
+  postType: 'article' | 'video';
   category: string;
   published: boolean;
   readingTime: number;
@@ -40,6 +44,8 @@ export interface Post {
     likes: number;
     comments: number;
   };
+  isSponsored?: boolean;
+  sponsorship?: Sponsorship | null;
 }
 
 export interface Comment {
@@ -59,6 +65,9 @@ export interface ProfileData {
     totalLikes: number;
     estimatedRevenue?: number;
     totalDonated?: number;
+    walletBalance?: number;
+    totalDonationIncome?: number;
+    totalSponsorshipIncome?: number;
   };
   posts: Post[];
 }
@@ -76,7 +85,19 @@ export interface Donation {
   donor: PostAuthor;
 }
 
-export const CATEGORIES = ['All', 'Tech', 'Design', 'Art', 'Lifestyle', 'Science', 'Business'] as const;
+export interface Sponsorship {
+  id: string;
+  postId: string;
+  userId: string;
+  amount: number;
+  duration: number;
+  expiresAt: string;
+  isActive: boolean;
+  createdAt: string;
+  user?: PostAuthor;
+}
+
+export const CATEGORIES = ['All', 'Tech', 'Design', 'Art', 'Lifestyle', 'Science', 'Business', 'Video'] as const;
 export type Category = (typeof CATEGORIES)[number];
 
 export const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
@@ -86,7 +107,10 @@ export const CATEGORY_COLORS: Record<string, { bg: string; text: string; border:
   Lifestyle: { bg: 'rgba(16,185,129,0.12)', text: '#10b981', border: 'rgba(16,185,129,0.25)' },
   Science: { bg: 'rgba(59,130,246,0.12)', text: '#3b82f6', border: 'rgba(59,130,246,0.25)' },
   Business: { bg: 'rgba(234,179,8,0.12)', text: '#eab308', border: 'rgba(234,179,8,0.25)' },
+  Video: { bg: 'rgba(168,85,247,0.12)', text: '#a855f7', border: 'rgba(168,85,247,0.25)' },
 };
+
+export type SearchFilter = 'all' | 'articles' | 'videos' | 'sponsored';
 
 interface AppState {
   // Auth
@@ -95,7 +119,7 @@ interface AppState {
   isAuthenticated: boolean;
   isLoadingAuth: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (data: { email: string; name: string; username: string; password: string; role?: string }) => Promise<void>;
+  register: (data: { email: string; name: string; username: string; password: string; role?: string; avatar?: string }) => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
 
@@ -110,9 +134,9 @@ interface AppState {
   currentPost: Post | null;
   currentPostComments: Comment[];
   userLikedCurrentPost: boolean;
-  loadPosts: (search?: string, category?: string) => Promise<void>;
+  loadPosts: (search?: string, category?: string, postType?: string) => Promise<void>;
   loadPost: (id: string) => Promise<void>;
-  createPost: (data: { title: string; excerpt?: string; content: string; thumbnail?: string; category?: string; published?: boolean; readingTime?: number }) => Promise<Post>;
+  createPost: (data: { title: string; excerpt?: string; content: string; thumbnail?: string; videoUrl?: string; postType?: 'article' | 'video'; category?: string; published?: boolean; readingTime?: number }) => Promise<Post>;
   updatePost: (id: string, data: Partial<Post>) => Promise<Post>;
   deletePost: (id: string) => Promise<void>;
   toggleLike: (postId: string) => Promise<void>;
@@ -126,7 +150,7 @@ interface AppState {
 
   // My Posts (Dashboard)
   myPosts: Post[];
-  myPostsStats: { totalPosts: number; publishedPosts: number; draftPosts: number; totalViews: number; totalLikes: number } | null;
+  myPostsStats: { totalPosts: number; publishedPosts: number; draftPosts: number; totalViews: number; totalLikes: number; totalDonationIncome?: number; totalSponsorshipIncome?: number; walletBalance?: number } | null;
   myPostsLoading: boolean;
   loadMyPosts: () => Promise<void>;
 
@@ -149,6 +173,23 @@ interface AppState {
   setShowDonationModal: (v: boolean) => void;
   donationPostId: string | null;
   setDonationPostId: (id: string | null) => void;
+
+  // Sponsorships
+  sponsoredPosts: Post[];
+  loadSponsoredPosts: () => Promise<void>;
+  createSponsorship: (postId: string, amount: number, duration: number) => Promise<void>;
+  showSponsorModal: boolean;
+  setShowSponsorModal: (v: boolean) => void;
+  sponsorPostId: string | null;
+  setSponsorPostId: (id: string | null) => void;
+
+  // Search Filters
+  searchFilter: SearchFilter;
+  setSearchFilter: (filter: SearchFilter) => void;
+
+  // Earnings Dashboard
+  earningsData: { totalDonationIncome: number; totalSponsorshipIncome: number; platformCommission: number; walletBalance: number; recentTransactions: { id: string; type: string; amount: number; description: string; createdAt: string }[] } | null;
+  loadEarnings: () => Promise<void>;
 
   // Seeded flag
   seeded: boolean;
@@ -192,7 +233,6 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   checkAuth: async () => {
     const token = localStorage.getItem('token');
-    // Also restore cookie consent from localStorage
     const savedConsent = localStorage.getItem('cookieConsent');
     if (savedConsent === 'true') {
       set({ cookieConsent: true });
@@ -233,12 +273,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   currentPostComments: [],
   userLikedCurrentPost: false,
 
-  loadPosts: async (search, category) => {
+  loadPosts: async (search, category, postType) => {
     set({ postsLoading: true });
     try {
       const params = new URLSearchParams();
       if (search) params.set('search', search);
       if (category && category !== 'All') params.set('category', category);
+      if (postType) params.set('postType', postType);
       const url = `/api/posts?${params.toString()}`;
       const res = await fetch(url);
       const data = await res.json();
@@ -480,26 +521,70 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Failed to create donation');
-    // Reload donations after creating
     await get().loadDonations(postId);
   },
 
   setShowDonationModal: (v) => set({ showDonationModal: v }),
   setDonationPostId: (id) => set({ donationPostId: id }),
 
+  // Sponsorships
+  sponsoredPosts: [],
+  loadSponsoredPosts: async () => {
+    try {
+      const res = await fetch('/api/sponsorships?active=true');
+      const data = await res.json();
+      if (res.ok) {
+        set({ sponsoredPosts: data.posts || [] });
+      }
+    } catch {
+      // ignore
+    }
+  },
+
+  createSponsorship: async (postId, amount, duration) => {
+    const state = get();
+    if (!state.token) throw new Error('Not authenticated');
+    const res = await fetch('/api/sponsorships', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${state.token}`,
+      },
+      body: JSON.stringify({ postId, amount, duration }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to create sponsorship');
+    await get().loadSponsoredPosts();
+  },
+
+  showSponsorModal: false,
+  setShowSponsorModal: (v) => set({ showSponsorModal: v }),
+  sponsorPostId: null,
+  setSponsorPostId: (id) => set({ sponsorPostId: id }),
+
+  // Search Filters
+  searchFilter: 'all',
+  setSearchFilter: (filter) => set({ searchFilter: filter }),
+
+  // Earnings Dashboard
+  earningsData: null,
+  loadEarnings: async () => {
+    const state = get();
+    if (!state.token) return;
+    try {
+      const res = await fetch('/api/earnings', {
+        headers: { Authorization: `Bearer ${state.token}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        set({ earningsData: data });
+      }
+    } catch {
+      // ignore
+    }
+  },
+
   // Seeded
   seeded: false,
   setSeeded: (v) => set({ seeded: v }),
 }));
-
-// Debounce utility hook
-export function useDebounce<T extends (...args: unknown[]) => void>(
-  callback: T,
-  delay: number
-): T {
-  let timeoutId: ReturnType<typeof setTimeout>;
-  return ((...args: unknown[]) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => callback(...args), delay);
-  }) as T;
-}

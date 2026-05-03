@@ -106,7 +106,7 @@ Neon colors—cyan, magenta, electric purple—naturally draw attention. They're
 The most effective neon palettes combine:
 
 - **Cyan (#00f0ff)**: Technology, clarity, digital precision
-- **Purple (#a855f7)**: Creativity, mystery, imagination  
+- **Purple (#a855f7)**: Creativity, mystery, imagination
 - **Emerald (#10b981)**: Growth, success, nature-tech fusion
 - **Magenta (#ff00ff)**: Boldness, innovation, edge
 
@@ -120,16 +120,6 @@ The glow effect is achieved through box-shadow with spread:
               0 0 30px rgba(0, 240, 255, 0.1);
 }
 \`\`\`
-
-## When to Use Neon
-
-Neon works best as an accent, not a foundation. Use it for:
-- Call-to-action buttons
-- Active states and indicators
-- Highlights and emphasis
-- Brand elements
-
-Avoid using neon for large areas of text or backgrounds—it causes eye strain and reduces readability.
 
 The key to mastering neon aesthetics is restraint. A single neon accent on a dark background is more powerful than a fully saturated neon interface.`,
     thumbnail: 'https://picsum.photos/seed/neon1/800/400',
@@ -176,22 +166,6 @@ const container = {
 }
 \`\`\`
 
-### AnimatePresence
-For exit animations, AnimatePresence keeps elements in the DOM long enough to animate out:
-
-\`\`\`tsx
-<AnimatePresence>
-  {isVisible && <motion.div exit={{ opacity: 0 }} />}
-</AnimatePresence>
-\`\`\`
-
-## Performance Tips
-
-- Use \`transform\` properties (x, y, scale, rotate) instead of layout properties
-- Set \`will-change\` sparingly
-- Use \`layoutId\` for shared element transitions
-- Prefer CSS animations for simple hover effects
-
 Animation should serve the user's understanding, not just their entertainment. Every motion should have meaning.`,
     thumbnail: 'https://picsum.photos/seed/framer1/800/400',
     published: true,
@@ -217,16 +191,6 @@ A request that travels 50ms to a central server and 50ms back has 100ms of netwo
 ### Better Personalization
 With edge functions, you can personalize content without client-side JavaScript, improving both performance and SEO.
 
-### Improved Reliability
-Distributed computation means no single point of failure. If one edge node goes down, others seamlessly take over.
-
-## Real-World Applications
-
-- **A/B testing at the edge**: Serve different variants without client-side flickering
-- **Geographic personalization**: Adjust content, currency, and language based on location
-- **Authentication at the edge**: Validate tokens before reaching origin servers
-- **CDN logic**: Custom caching strategies per route and user
-
 The edge is not replacing traditional servers—it's complementing them. Use the edge for latency-sensitive operations and origin servers for heavy computation.`,
     thumbnail: 'https://picsum.photos/seed/edge1/800/400',
     published: true,
@@ -248,24 +212,6 @@ Pure black (#000000) creates too much contrast with white text, causing eye stra
 ### Desaturated Colors
 Colors that look great on light backgrounds can feel neon-harsh on dark backgrounds. Reduce saturation by 10-20% for dark mode palettes.
 
-### Forgetting Elevation
-On dark surfaces, shadows don't work well. Use subtle background color differences to indicate elevation instead.
-
-## Building a Dark Design System
-
-### Background Layers
-- **Base**: #0a0a14 (deepest)
-- **Surface**: #12121e (cards)
-- **Elevated**: #1a1a2e (modals, popovers)
-
-### Text Hierarchy
-- **Primary**: rgba(255, 255, 255, 0.95)
-- **Secondary**: rgba(255, 255, 255, 0.7)
-- **Muted**: rgba(255, 255, 255, 0.45)
-
-### Accent Colors
-Neon accents work beautifully on dark backgrounds—use them for interactive elements and important information.
-
 Dark mode isn't just aesthetic preference—it's about creating comfortable, accessible experiences for users in any environment.`,
     thumbnail: 'https://picsum.photos/seed/dark1/800/400',
     published: true,
@@ -284,40 +230,14 @@ As applications grow, TypeScript's type system becomes your most powerful tool f
 One of TypeScript's most powerful patterns for modeling state:
 
 \`\`\`typescript
-type AsyncState<T> = 
+type AsyncState<T> =
   | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'success'; data: T }
   | { status: 'error'; error: Error }
 \`\`\`
 
-The \`status\` discriminant ensures TypeScript knows exactly which properties are available in each state.
-
-## Builder Pattern with Types
-
-Create type-safe APIs using the builder pattern:
-
-\`\`\`typescript
-class QueryBuilder<T> {
-  private filters: Filter[] = [];
-  
-  where(field: keyof T, value: T[keyof T]): this {
-    this.filters.push({ field, value });
-    return this;
-  }
-}
-\`\`\`
-
-## Branded Types
-
-Prevent mixing up similar types (like userId and postId) with branded types:
-
-\`\`\`typescript
-type UserId = string & { readonly brand: unique symbol }
-type PostId = string & { readonly brand: unique symbol }
-\`\`\`
-
-## The key to scalable TypeScript is thinking in types first. Design your types to make invalid states unrepresentable, and the rest follows naturally.`,
+The key to scalable TypeScript is thinking in types first. Design your types to make invalid states unrepresentable, and the rest follows naturally.`,
     thumbnail: 'https://picsum.photos/seed/typescript1/800/400',
     published: true,
     readingTime: 7,
@@ -337,60 +257,96 @@ Creative coding is programming with the primary goal of creating something expre
 - **Generative art**: Algorithms that produce unique visual outputs
 - **Interactive installations**: Software that responds to physical input
 - **Data visualization**: Making information beautiful as well as informative
-- **Audio visualization**: Translating sound into visual experiences
-
-## Getting Started
-
-### Processing and p5.js
-p5.js is the most accessible creative coding environment:
-
-\`\`\`javascript
-function setup() {
-  createCanvas(800, 600);
-}
-
-function draw() {
-  background(10, 10, 20);
-  const x = noise(frameCount * 0.01) * width;
-  const y = noise(frameCount * 0.01 + 100) * height;
-  circle(x, y, 50);
-}
-\`\`\`
-
-### GLSL Shaders
-For GPU-accelerated visuals, GLSL shaders provide incredible power:
-
-\`\`\`glsl
-void main() {
-  vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-  float d = length(uv - 0.5);
-  gl_FragColor = vec4(vec3(smoothstep(0.5, 0.0, d)), 1.0);
-}
-\`\`\`
-
-## Principles of Creative Coding
-
-1. **Embrace randomness**: Controlled chaos creates organic beauty
-2. **Iterate rapidly**: Small changes, many variations
-3. **Observe nature**: The best algorithms mimic natural phenomena
-4. **Share generously**: Creative coding thrives on community
 
 The beauty of creative coding is that there are no wrong answers—only discoveries waiting to be made.`,
     thumbnail: 'https://picsum.photos/seed/creative1/800/400',
     published: true,
     readingTime: 6,
   },
+  // Video posts
+  {
+    title: 'Building a 3D Portfolio with Three.js',
+    excerpt: 'Step-by-step tutorial on creating an immersive 3D web portfolio using Three.js and WebGL.',
+    category: 'Video',
+    content: `# Building a 3D Portfolio with Three.js
+
+In this video tutorial, we walk through creating a stunning 3D web portfolio from scratch using Three.js. Learn how to set up scenes, import models, add lighting, and create interactive camera controls that will make your portfolio stand out.
+
+## What You'll Learn
+
+- Setting up a Three.js project with modern tooling
+- Creating and managing 3D scenes
+- Importing and displaying 3D models
+- Adding realistic lighting and shadows
+- Implementing orbit controls for user interaction
+- Optimizing performance for smooth rendering
+
+## Prerequisites
+
+- Basic knowledge of JavaScript and HTML
+- Familiarity with CSS and web development concepts
+- A modern browser with WebGL support
+
+The full source code is available in the description below. Don't forget to like and subscribe for more creative coding content!`,
+    thumbnail: 'https://picsum.photos/seed/threejs1/800/400',
+    videoUrl: '/hero-bg.mp4',
+    published: true,
+    readingTime: 15,
+  },
+  {
+    title: 'CSS Grid Mastery: Building Complex Layouts',
+    excerpt: 'Master CSS Grid with real-world examples and build layouts that were previously impossible.',
+    category: 'Video',
+    content: `# CSS Grid Mastery: Building Complex Layouts
+
+CSS Grid has revolutionized how we build web layouts. In this comprehensive video, we explore advanced grid techniques that let you create complex, responsive layouts with minimal code.
+
+## Topics Covered
+
+- Grid template areas for semantic layouts
+- Auto-fit and auto-fill for responsive grids
+- Named grid lines for precise placement
+- Subgrid for nested alignment
+- Combining Grid with Flexbox for ultimate control
+
+Watch the full walkthrough and follow along with the interactive examples provided in the link below.`,
+    thumbnail: 'https://picsum.photos/seed/cssgrid1/800/400',
+    videoUrl: '/hero-bg.mp4',
+    published: true,
+    readingTime: 12,
+  },
+  {
+    title: 'Live Coding: Building a Chat App from Scratch',
+    excerpt: 'Watch as we build a real-time chat application from zero to deployment in this live coding session.',
+    category: 'Video',
+    content: `# Live Coding: Building a Chat App from Scratch
+
+Join us for an exciting live coding session where we build a complete real-time chat application from scratch. We cover everything from setting up the WebSocket server to designing the chat UI with smooth animations.
+
+## What We Build
+
+- WebSocket server with Node.js
+- Real-time message delivery
+- User presence indicators
+- Typing indicators
+- Message history and search
+- Responsive mobile-friendly UI
+
+Follow along or just watch and learn. The complete code is shared at the end of the video!`,
+    thumbnail: 'https://picsum.photos/seed/chatapp1/800/400',
+    videoUrl: '/hero-bg.mp4',
+    published: true,
+    readingTime: 20,
+  },
 ];
 
 export async function GET() {
   try {
-    // Check if already seeded
     const existingUsers = await db.user.count();
     if (existingUsers > 0) {
       return NextResponse.json({ message: 'Database already seeded', count: existingUsers });
     }
 
-    // Create sample artists
     const artists = await Promise.all([
       db.user.create({
         data: {
@@ -401,6 +357,7 @@ export async function GET() {
           bio: 'Digital artist and UI designer exploring the intersection of technology and aesthetics. Creating interfaces that feel alive.',
           avatar: 'https://i.pravatar.cc/150?u=luna',
           role: 'artist',
+          walletBalance: 42.50,
         },
       }),
       db.user.create({
@@ -412,6 +369,7 @@ export async function GET() {
           bio: 'Full-stack developer with a passion for real-time applications and creative coding. Building the future, one pixel at a time.',
           avatar: 'https://i.pravatar.cc/150?u=kai',
           role: 'artist',
+          walletBalance: 128.75,
         },
       }),
       db.user.create({
@@ -423,11 +381,11 @@ export async function GET() {
           bio: 'TypeScript enthusiast and open-source contributor. Writing code that scales and designs that inspire.',
           avatar: 'https://i.pravatar.cc/150?u=aria',
           role: 'artist',
+          walletBalance: 67.30,
         },
       }),
     ]);
 
-    // Create posts
     const createdPosts = [];
     for (let i = 0; i < samplePosts.length; i++) {
       const postData = samplePosts[i];
@@ -448,6 +406,7 @@ export async function GET() {
           excerpt: postData.excerpt,
           content: postData.content,
           thumbnail: postData.thumbnail,
+          videoUrl: (postData as Record<string, unknown>).videoUrl || null,
           category: postData.category || 'Tech',
           published: postData.published,
           readingTime: postData.readingTime,
@@ -458,7 +417,7 @@ export async function GET() {
       createdPosts.push(post);
     }
 
-    // Add some comments
+    // Add comments
     const comments = [
       { content: 'This is incredibly well-written! The examples really helped me understand the concepts.', postIndex: 0, authorIndex: 1 },
       { content: 'I\'ve been implementing this pattern in my projects and the results are amazing.', postIndex: 0, authorIndex: 2 },
@@ -466,6 +425,8 @@ export async function GET() {
       { content: 'Beautiful explanation of a complex topic. Bookmarked!', postIndex: 2, authorIndex: 1 },
       { content: 'Would love to see a follow-up article on advanced animation techniques.', postIndex: 3, authorIndex: 2 },
       { content: 'This changed how I think about dark mode design. Great insights!', postIndex: 5, authorIndex: 0 },
+      { content: 'Amazing video tutorial! The Three.js setup was so clear.', postIndex: 8, authorIndex: 1 },
+      { content: 'CSS Grid finally makes sense! Thank you for this.', postIndex: 9, authorIndex: 0 },
     ];
 
     for (const comment of comments) {
@@ -478,11 +439,12 @@ export async function GET() {
       });
     }
 
-    // Add some likes
+    // Add likes
     const likePairs = [
       [0, 1], [0, 2], [1, 0], [1, 2], [2, 0], [2, 1],
       [3, 0], [3, 2], [4, 0], [4, 1], [5, 0], [5, 1], [5, 2],
       [6, 0], [6, 1], [7, 0], [7, 1], [7, 2],
+      [8, 0], [8, 1], [8, 2], [9, 0], [9, 1], [10, 0], [10, 1],
     ];
 
     for (const [postIdx, authorIdx] of likePairs) {
@@ -494,8 +456,65 @@ export async function GET() {
       });
     }
 
+    // Add sample sponsorships
+    await db.sponsorship.create({
+      data: {
+        postId: createdPosts[0].id,
+        userId: artists[1].id,
+        amount: 15.00,
+        duration: 24,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        isActive: true,
+      },
+    });
+    await db.sponsorship.create({
+      data: {
+        postId: createdPosts[8].id,
+        userId: artists[2].id,
+        amount: 25.00,
+        duration: 48,
+        expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
+        isActive: true,
+      },
+    });
+
+    // Add sample donations
+    await db.donation.create({
+      data: {
+        postId: createdPosts[0].id,
+        donorId: artists[1].id,
+        artistId: artists[0].id,
+        amount: 10.00,
+        artistAmount: 8.00,
+        platformFee: 2.00,
+        message: 'Love your work on glassmorphism!',
+      },
+    });
+    await db.donation.create({
+      data: {
+        postId: createdPosts[1].id,
+        donorId: artists[0].id,
+        artistId: artists[1].id,
+        amount: 5.00,
+        artistAmount: 4.00,
+        platformFee: 1.00,
+        message: 'Great WebSocket tutorial!',
+      },
+    });
+    await db.donation.create({
+      data: {
+        postId: createdPosts[8].id,
+        donorId: artists[2].id,
+        artistId: artists[0].id,
+        amount: 20.00,
+        artistAmount: 16.00,
+        platformFee: 4.00,
+        message: 'Your Three.js content is incredible!',
+      },
+    });
+
     return NextResponse.json({
-      message: 'Database seeded successfully',
+      message: 'Database seeded successfully with video posts, sponsorships, and donations',
       users: artists.length,
       posts: createdPosts.length,
       comments: comments.length,

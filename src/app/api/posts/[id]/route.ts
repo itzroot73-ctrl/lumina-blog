@@ -39,7 +39,8 @@ export async function GET(
         author: {
           select: { id: true, name: true, username: true, avatar: true, bio: true },
         },
-        _count: { select: { likes: true, comments: true } },
+        _count: { select: { likes: true, comments: true, donations: true } },
+        sponsorships: { where: { isActive: true }, take: 1 },
       },
     });
 
@@ -47,7 +48,14 @@ export async function GET(
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ post });
+    const postWithType = {
+      ...post,
+      isSponsored: (post.sponsorships?.length || 0) > 0,
+      sponsorship: post.sponsorships?.[0] || null,
+      postType: (post.videoUrl || post.category === 'Video') ? 'video' : 'article',
+    };
+
+    return NextResponse.json({ post: postWithType });
   } catch (error) {
     console.error('Get post error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -77,7 +85,7 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { title, excerpt, content, thumbnail, published, readingTime } = body;
+    const { title, excerpt, content, thumbnail, published, readingTime, videoUrl, category } = body;
 
     const post = await db.post.update({
       where: { id },
@@ -88,6 +96,8 @@ export async function PUT(
         ...(thumbnail !== undefined && { thumbnail }),
         ...(published !== undefined && { published }),
         ...(readingTime !== undefined && { readingTime }),
+        ...(videoUrl !== undefined && { videoUrl }),
+        ...(category !== undefined && { category }),
       },
       include: {
         author: {

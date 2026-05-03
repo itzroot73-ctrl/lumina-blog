@@ -15,8 +15,10 @@ model User {
   password      String
   bio           String?
   avatar        String?
+  coverImage    String?
   role          String    @default("artist")
   isPremium     Boolean   @default(false)
+  walletBalance Float     @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   posts         Post[]
@@ -24,6 +26,7 @@ model User {
   likes         Like[]
   donorDonations  Donation[] @relation("DonorDonations")
   artistDonations Donation[] @relation("ArtistDonations")
+  sponsorships  Sponsorship[] @relation("SponsorUser")
 }
 
 model Post {
@@ -44,6 +47,7 @@ model Post {
   comments      Comment[]
   likes         Like[]
   donations     Donation[]
+  sponsorships  Sponsorship[]
 }
 
 model Comment {
@@ -80,4 +84,17 @@ model Donation {
   post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
   donor         User      @relation("DonorDonations", fields: [donorId], references: [id], onDelete: Cascade)
   artist        User      @relation("ArtistDonations", fields: [artistId], references: [id], onDelete: Cascade)
+}
+
+model Sponsorship {
+  id            String    @id @default(cuid())
+  postId        String
+  userId        String
+  amount        Float
+  duration      Int       @default(24)  // hours
+  expiresAt     DateTime
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user          User      @relation("SponsorUser", fields: [userId], references: [id], onDelete: Cascade)
 }

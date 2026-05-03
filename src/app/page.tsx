@@ -14,11 +14,13 @@ import PostDetail from '@/components/PostDetail';
 import ArtistProfile from '@/components/ArtistProfile';
 import PremiumCheckout from '@/components/PremiumCheckout';
 import SupportArtistModal from '@/components/SupportArtistModal';
+import SponsorModal from '@/components/SponsorModal';
+import SponsorPopup from '@/components/SponsorPopup';
 import { AdSenseProvider } from '@/components/ads';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
+import Lenis from 'lenis';
 
 function ViewRenderer({ view }: { view: string }) {
-  // Map 'browse' to 'home' for guest feed access
   const actualView = view === 'browse' ? 'home' : view;
   switch (actualView) {
     case 'home':
@@ -40,6 +42,25 @@ function ViewRenderer({ view }: { view: string }) {
 
 export default function Home() {
   const { currentView, checkAuth, isAuthenticated, isLoadingAuth, seeded, setSeeded, cookieConsent, setCookieConsent } = useAppStore();
+
+  // Initialize Lenis smooth scroll
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      touchMultiplier: 2,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
 
   useEffect(() => {
     checkAuth();
@@ -65,7 +86,7 @@ export default function Home() {
   const handleCookieDecline = () => { setCookieConsent(false); };
   const handleCookieDismiss = () => { setCookieConsent(false); };
 
-  // Loading state while checking auth
+  // Loading state
   if (isLoadingAuth) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
@@ -74,24 +95,23 @@ export default function Home() {
           animate={{ opacity: 1 }}
           className="text-center"
         >
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#f97316] to-[#ea580c] flex items-center justify-center mx-auto mb-4 animate-pulse"
-            style={{ boxShadow: '0 0 30px rgba(249,115,22,0.3)' }}
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f97316] to-[#ea580c] flex items-center justify-center mx-auto mb-5 animate-pulse"
+            style={{ boxShadow: '0 0 40px rgba(249,115,22,0.3)' }}
           >
-            <span className="text-white text-xl font-black">L</span>
+            <span className="text-white text-2xl font-black">L</span>
           </div>
           <div className="w-6 h-6 border-2 border-[#f97316]/30 border-t-[#f97316] rounded-full animate-spin mx-auto" />
+          <p className="text-[10px] text-white/15 uppercase tracking-[0.3em] mt-4">Loading Lumina</p>
         </motion.div>
       </div>
     );
   }
 
-  // Unauthenticated users see landing page on 'home', but can browse via 'browse'
   const showLanding = !isAuthenticated && currentView === 'home';
 
   return (
     <AdSenseProvider cookieConsent={cookieConsent}>
       <div className="min-h-screen bg-[#0a0a0a] relative">
-        {/* Landing page — full cinematic pre-login experience */}
         {showLanding ? (
           <LandingPage />
         ) : (
@@ -121,13 +141,20 @@ export default function Home() {
                       <img src="/logo.png" alt="Lumina" className="h-5 w-5 rounded" />
                       <span className="text-xs text-white/25 font-medium">Lumina Blog Platform</span>
                     </div>
-                    <p className="text-[10px] text-white/10 tracking-wider uppercase">
-                      Next.js / Tailwind / Framer Motion
-                    </p>
+                    <div className="flex items-center gap-4">
+                      <span className="text-[10px] text-white/10 uppercase tracking-wider">80% Creator / 20% Platform</span>
+                      <span className="text-white/5">|</span>
+                      <p className="text-[10px] text-white/10 tracking-wider uppercase">
+                        Next.js / GSAP / Framer Motion
+                      </p>
+                    </div>
                   </div>
                 </div>
               </footer>
             </div>
+
+            {/* Sponsor Popup — bottom right floating card */}
+            <SponsorPopup />
           </>
         )}
 
@@ -136,6 +163,9 @@ export default function Home() {
 
         {/* Support Artist Donation Modal */}
         <SupportArtistModal />
+
+        {/* Sponsor/Boost Modal */}
+        <SponsorModal />
 
         {/* Cookie Consent Banner */}
         <CookieConsentBanner

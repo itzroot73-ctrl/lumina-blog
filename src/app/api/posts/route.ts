@@ -38,11 +38,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
     const category = searchParams.get('category') || '';
+    const postType = searchParams.get('postType') || '';
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '12');
     const skip = (page - 1) * limit;
 
-    const where = {
+    const where: Record<string, unknown> = {
       published: true,
       ...(search
         ? {
@@ -52,29 +53,93 @@ export async function GET(request: NextRequest) {
             ],
           }
         : {}),
-      ...(category
-        ? { category }
-        : {}),
+      ...(category ? { category } : {}),
     };
 
-    const [posts, total] = await Promise.all([
-      db.post.findMany({
-        where,
-        include: {
-          author: {
-            select: { id: true, name: true, username: true, avatar: true },
+    let posts;
+    let total;
+
+    if (postType === 'video') {
+      // Filter for video posts - posts that have videoUrl or category Video
+      const videoWhere = { ...where, OR: [{ videoUrl: { not: null } }, { category: 'Video' }] };
+      [posts, total] = await Promise.all([
+        db.post.findMany({
+          where: videoWhere,
+          include: {
+            author: { select: { id: true, name: true, username: true, avatar: true } },
+            _count: { select: { likes: true, comments: true } },
+            sponsorships: { where: { isActive: true }, take: 1 },
           },
-          _count: { select: { likes: true, comments: true } },
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: limit,
+        }),
+        db.post.count({ where: videoWhere }),
+      ]);
+    } else if (postType === 'article') {
+      // Filter for article posts - no videoUrl and not Video category
+      const articleWhere = { ...where, videoUrl: null, NOT: { category: 'Video' } };
+      [posts, total] = await Promise.all([
+        db.post.findMany({
+          where: articleWhere,
+          include: {
+            author: { select: { id: true, name: true, username: true, avatar: true } },
+            _count: { select: { likes: true, comments: true } },
+            sponsorships: { where: { isActive: true }, take: 1 },
+          },
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: limit,
+        }),
+        db.post.count({ where: articleWhere }),
+      ]);
+    } else if (postType === 'sponsored') {
+      // Filter for sponsored posts
+      const sponsoredPosts = await db.sponsorship.findMany({
+        where: { isActive: true },
+        include: {
+          post: {
+            include: {
+              author: { select: { id: true, name: true, username: true, avatar: true } },
+              _count: { select: { likes: true, comments: true } },
+            },
+          },
         },
         orderBy: { createdAt: 'desc' },
-        skip,
-        take: limit,
-      }),
-      db.post.count({ where }),
-    ]);
+      });
+      posts = sponsoredPosts.map(s => ({
+        ...s.post,
+        isSponsored: true,
+        sponsorship: { id: s.id, amount: s.amount, expiresAt: s.expiresAt, isActive: s.isActive },
+      })).filter(p => p.id);
+      total = posts.length;
+    } else {
+      [posts, total] = await Promise.all([
+        db.post.findMany({
+          where,
+          include: {
+            author: { select: { id: true, name: true, username: true, avatar: true } },
+            _count: { select: { likes: true, comments: true } },
+            sponsorships: { where: { isActive: true }, take: 1 },
+          },
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: limit,
+        }),
+        db.post.count({ where }),
+      ]);
+    }
+
+    // Mark sponsored posts
+    const postsWithSponsorFlag = posts.map((p: Record<string, unknown>) => ({
+      ...p,
+      isSponsored: (p.isSponsored as boolean) || ((p.sponsorships as unknown[])?.length > 0),
+      sponsorship: p.sponsorship || ((p.sponsorships as unknown[])?.[0] || null),
+      postType: (p.videoUrl || p.category === 'Video') ? 'video' : 'article',
+    }));
 
     return NextResponse.json({
-      posts,
+      posts: postsWithSponsorFlag,
       total,
       page,
       totalPages: Math.ceil(total / limit),
@@ -94,7 +159,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, excerpt, content, thumbnail, category, published, readingTime } = body;
+    const { title, excerpt, content, thumbnail, category, published, readingTime, videoUrl, postType } = body;
 
     if (!title || !content) {
       return NextResponse.json(
@@ -104,6 +169,7 @@ export async function POST(request: NextRequest) {
     }
 
     const slug = slugify(title) + '-' + Date.now().toString(36);
+    const finalCategory = postType === 'video' ? (category || 'Video') : (category || 'Tech');
 
     const post = await db.post.create({
       data: {
@@ -112,7 +178,8 @@ export async function POST(request: NextRequest) {
         excerpt: excerpt || null,
         content,
         thumbnail: thumbnail || null,
-        category: category || 'Tech',
+        videoUrl: videoUrl || null,
+        category: finalCategory,
         published: published || false,
         readingTime: readingTime || Math.max(1, Math.ceil(content.split(/\s+/).length / 200)),
         authorId: userId,
