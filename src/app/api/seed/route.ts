@@ -12,6 +12,7 @@ const samplePosts = [
   {
     title: 'The Art of Glassmorphism in Modern Web Design',
     excerpt: 'Exploring how frosted glass effects are transforming digital interfaces and creating depth in flat design.',
+    category: 'Design',
     content: `# The Art of Glassmorphism in Modern Web Design
 
 Glassmorphism has become one of the most influential design trends in recent years. This style, characterized by frosted-glass-like elements with translucent backgrounds and subtle borders, creates a sense of depth and hierarchy that flat design alone cannot achieve.
@@ -52,6 +53,7 @@ The future of interface design lies in finding the balance between aesthetic app
   {
     title: 'Building Real-Time Applications with WebSockets',
     excerpt: 'A deep dive into creating responsive, real-time features using WebSocket technology and modern frameworks.',
+    category: 'Tech',
     content: `# Building Real-Time Applications with WebSockets
 
 Real-time features are no longer a luxury—they're an expectation. From chat applications to collaborative editing tools, users expect instant feedback and live updates.
@@ -90,6 +92,7 @@ Real-time doesn't have to be complex. With the right patterns and tools, you can
   {
     title: 'Neon Aesthetics: Designing for the Digital Frontier',
     excerpt: 'How neon colors and glowing effects are defining the next generation of digital experiences.',
+    category: 'Design',
     content: `# Neon Aesthetics: Designing for the Digital Frontier
 
 Neon design draws inspiration from cyberpunk, synthwave, and the glowing signage of urban nightlife. In digital interfaces, neon accents create focus, energy, and a futuristic feel.
@@ -136,6 +139,7 @@ The key to mastering neon aesthetics is restraint. A single neon accent on a dar
   {
     title: 'Mastering Framer Motion for Fluid Interfaces',
     excerpt: 'Creating smooth, physics-based animations that make your applications feel alive and responsive.',
+    category: 'Tech',
     content: `# Mastering Framer Motion for Fluid Interfaces
 
 Animation is not decoration—it's communication. When elements move naturally, users understand relationships, hierarchy, and cause-and-effect intuitively.
@@ -196,6 +200,7 @@ Animation should serve the user's understanding, not just their entertainment. E
   {
     title: 'The Rise of Edge Computing in Web Applications',
     excerpt: 'How moving computation closer to users is revolutionizing web performance and user experience.',
+    category: 'Tech',
     content: `# The Rise of Edge Computing in Web Applications
 
 Edge computing represents a fundamental shift in how we architect web applications. Instead of processing everything in centralized data centers, we distribute computation to nodes closer to users.
@@ -230,6 +235,7 @@ The edge is not replacing traditional servers—it's complementing them. Use the
   {
     title: 'Dark Mode Design: Beyond Inverting Colors',
     excerpt: 'Creating thoughtful dark interfaces that reduce eye strain while maintaining visual hierarchy and aesthetics.',
+    category: 'Design',
     content: `# Dark Mode Design: Beyond Inverting Colors
 
 Dark mode is more than just swapping white backgrounds for black. A well-designed dark interface requires rethinking color, contrast, and visual hierarchy entirely.
@@ -268,6 +274,7 @@ Dark mode isn't just aesthetic preference—it's about creating comfortable, acc
   {
     title: 'TypeScript Patterns for Scalable Applications',
     excerpt: 'Advanced TypeScript techniques that make your codebase more maintainable, type-safe, and developer-friendly.',
+    category: 'Tech',
     content: `# TypeScript Patterns for Scalable Applications
 
 As applications grow, TypeScript's type system becomes your most powerful tool for maintaining code quality and developer productivity.
@@ -318,6 +325,7 @@ type PostId = string & { readonly brand: unique symbol }
   {
     title: 'Creative Coding: When Art Meets Algorithms',
     excerpt: 'Exploring the intersection of programming and visual art through generative design and creative algorithms.',
+    category: 'Art',
     content: `# Creative Coding: When Art Meets Algorithms
 
 Creative coding transforms algorithms into art. It's where the precision of programming meets the expressiveness of visual creation.
@@ -440,6 +448,7 @@ export async function GET() {
           excerpt: postData.excerpt,
           content: postData.content,
           thumbnail: postData.thumbnail,
+          category: postData.category || 'Tech',
           published: postData.published,
           readingTime: postData.readingTime,
           views: Math.floor(Math.random() * 500) + 50,

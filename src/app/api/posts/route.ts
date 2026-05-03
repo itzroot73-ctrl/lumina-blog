@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
+    const category = searchParams.get('category') || '';
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '12');
     const skip = (page - 1) * limit;
@@ -50,6 +51,9 @@ export async function GET(request: NextRequest) {
               { excerpt: { contains: search } },
             ],
           }
+        : {}),
+      ...(category
+        ? { category }
         : {}),
     };
 
@@ -90,7 +94,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, excerpt, content, thumbnail, published, readingTime } = body;
+    const { title, excerpt, content, thumbnail, category, published, readingTime } = body;
 
     if (!title || !content) {
       return NextResponse.json(
@@ -108,6 +112,7 @@ export async function POST(request: NextRequest) {
         excerpt: excerpt || null,
         content,
         thumbnail: thumbnail || null,
+        category: category || 'Tech',
         published: published || false,
         readingTime: readingTime || Math.max(1, Math.ceil(content.split(/\s+/).length / 200)),
         authorId: userId,

@@ -16,6 +16,7 @@ model User {
   bio           String?
   avatar        String?
   role          String    @default("artist")
+  isPremium     Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   posts         Post[]
@@ -30,6 +31,7 @@ model Post {
   excerpt       String?
   content       String
   thumbnail     String?
+  category      String    @default("Tech")
   published     Boolean   @default(false)
   readingTime   Int       @default(5)
   views         Int       @default(0)

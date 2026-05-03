@@ -8,6 +8,7 @@ export interface User {
   bio?: string | null;
   avatar?: string | null;
   role: string;
+  isPremium: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -27,6 +28,7 @@ export interface Post {
   excerpt?: string | null;
   content: string;
   thumbnail?: string | null;
+  category: string;
   published: boolean;
   readingTime: number;
   views: number;
@@ -59,6 +61,18 @@ export interface ProfileData {
   posts: Post[];
 }
 
+export const CATEGORIES = ['All', 'Tech', 'Design', 'Art', 'Lifestyle', 'Science', 'Business'] as const;
+export type Category = (typeof CATEGORIES)[number];
+
+export const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  Tech: { bg: 'rgba(0,240,255,0.12)', text: '#00f0ff', border: 'rgba(0,240,255,0.25)' },
+  Design: { bg: 'rgba(168,85,247,0.12)', text: '#a855f7', border: 'rgba(168,85,247,0.25)' },
+  Art: { bg: 'rgba(244,63,94,0.12)', text: '#f43f5e', border: 'rgba(244,63,94,0.25)' },
+  Lifestyle: { bg: 'rgba(16,185,129,0.12)', text: '#10b981', border: 'rgba(16,185,129,0.25)' },
+  Science: { bg: 'rgba(59,130,246,0.12)', text: '#3b82f6', border: 'rgba(59,130,246,0.25)' },
+  Business: { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b', border: 'rgba(245,158,11,0.25)' },
+};
+
 interface AppState {
   // Auth
   user: User | null;
@@ -81,9 +95,9 @@ interface AppState {
   currentPost: Post | null;
   currentPostComments: Comment[];
   userLikedCurrentPost: boolean;
-  loadPosts: (search?: string) => Promise<void>;
+  loadPosts: (search?: string, category?: string) => Promise<void>;
   loadPost: (id: string) => Promise<void>;
-  createPost: (data: { title: string; excerpt?: string; content: string; thumbnail?: string; published?: boolean; readingTime?: number }) => Promise<Post>;
+  createPost: (data: { title: string; excerpt?: string; content: string; thumbnail?: string; category?: string; published?: boolean; readingTime?: number }) => Promise<Post>;
   updatePost: (id: string, data: Partial<Post>) => Promise<Post>;
   deletePost: (id: string) => Promise<void>;
   toggleLike: (postId: string) => Promise<void>;
@@ -100,6 +114,11 @@ interface AppState {
   myPostsStats: { totalPosts: number; publishedPosts: number; draftPosts: number; totalViews: number; totalLikes: number } | null;
   myPostsLoading: boolean;
   loadMyPosts: () => Promise<void>;
+
+  // Premium
+  showPremiumModal: boolean;
+  setShowPremiumModal: (v: boolean) => void;
+  activatePremium: () => Promise<void>;
 
   // Seeded flag
   seeded: boolean;
@@ -133,7 +152,6 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Registration failed');
-    // Auto-login after registration
     await get().login(registerData.email, registerData.password);
   },
 
@@ -180,10 +198,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   currentPostComments: [],
   userLikedCurrentPost: false,
 
-  loadPosts: async (search) => {
+  loadPosts: async (search, category) => {
     set({ postsLoading: true });
     try {
-      const url = search ? `/api/posts?search=${encodeURIComponent(search)}` : '/api/posts';
+      const params = new URLSearchParams();
+      if (search) params.set('search', search);
+      if (category && category !== 'All') params.set('category', category);
+      const url = `/api/posts?${params.toString()}`;
       const res = await fetch(url);
       const data = await res.json();
       if (res.ok) {
@@ -201,24 +222,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       const res = await fetch(`/api/posts/${id}`);
       const data = await res.json();
       if (res.ok) {
-        // Check if user liked this post
-        const state = get();
-        let userLiked = false;
-        if (state.isAuthenticated && state.token) {
-          try {
-            const likeCheck = await fetch(`/api/posts/${id}/like`, {
-              method: 'POST',
-              headers: { Authorization: `Bearer ${state.token}` },
-            });
-            // Toggle like returns current state, but we don't want to toggle
-            // Instead, we'll just track likes differently
-            // Actually, let's just set userLikedCurrentPost based on a different approach
-            // For simplicity, we won't auto-check like status - we'll just track it client-side
-          } catch {
-            // ignore
-          }
-        }
-        set({ currentPost: data.post, userLikedCurrentPost: userLiked });
+        set({ currentPost: data.post, userLikedCurrentPost: false });
       }
     } catch {
       // ignore
@@ -370,7 +374,42 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
   },
 
+  // Premium
+  showPremiumModal: false,
+  setShowPremiumModal: (v) => set({ showPremiumModal: v }),
+
+  activatePremium: async () => {
+    const state = get();
+    if (!state.token || !state.user) return;
+    try {
+      const res = await fetch('/api/premium/activate', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${state.token}` },
+      });
+      if (res.ok) {
+        set({
+          user: { ...state.user, isPremium: true },
+          showPremiumModal: false,
+        });
+      }
+    } catch {
+      // ignore
+    }
+  },
+
   // Seeded
   seeded: false,
   setSeeded: (v) => set({ seeded: v }),
 }));
+
+// Debounce utility hook
+export function useDebounce<T extends (...args: unknown[]) => void>(
+  callback: T,
+  delay: number
+): T {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return ((...args: unknown[]) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback(...args), delay);
+  }) as T;
+}

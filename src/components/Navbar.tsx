@@ -10,10 +10,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { PenSquare, User, LogOut, Home } from 'lucide-react';
+import { PenSquare, User, LogOut, Home, Crown } from 'lucide-react';
 
 export default function Navbar() {
-  const { user, isAuthenticated, logout, navigate } = useAppStore();
+  const { user, isAuthenticated, logout, navigate, setShowPremiumModal } = useAppStore();
+
+  const isPremium = user?.isPremium ?? false;
 
   return (
     <nav className="glass-nav sticky top-0 z-50">
@@ -56,6 +58,26 @@ export default function Navbar() {
               </Button>
             )}
 
+            {/* Go Premium Button — only show if not premium */}
+            {!isPremium && (
+              <Button
+                size="sm"
+                onClick={() => setShowPremiumModal(true)}
+                className="relative bg-gradient-to-r from-[#f59e0b] to-[#f43f5e] hover:opacity-90 text-white border-0 font-semibold animate-pulse-glow overflow-hidden"
+              >
+                <Crown className="w-4 h-4 mr-1.5" />
+                <span className="hidden sm:inline">Go Premium</span>
+              </Button>
+            )}
+
+            {/* Premium badge if user is premium */}
+            {isPremium && (
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-[#f59e0b]/15 to-[#f43f5e]/15 border border-[#f59e0b]/20">
+                <Crown className="w-3.5 h-3.5 text-[#f59e0b]" />
+                <span className="text-xs font-semibold text-[#f59e0b] hidden sm:inline">Premium</span>
+              </div>
+            )}
+
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -81,6 +103,11 @@ export default function Navbar() {
                   <div className="px-2 py-1.5">
                     <p className="text-sm font-medium text-white">{user?.name}</p>
                     <p className="text-xs text-white/50">@{user?.username}</p>
+                    {isPremium && (
+                      <span className="inline-flex items-center gap-1 mt-1 text-[10px] text-[#f59e0b] font-semibold">
+                        <Crown className="w-3 h-3" /> Premium Member
+                      </span>
+                    )}
                   </div>
                   <DropdownMenuSeparator className="bg-white/10" />
                   <DropdownMenuItem
@@ -97,6 +124,15 @@ export default function Navbar() {
                     >
                       <PenSquare className="mr-2 h-4 w-4" />
                       Dashboard
+                    </DropdownMenuItem>
+                  )}
+                  {!isPremium && (
+                    <DropdownMenuItem
+                      className="text-[#f59e0b] focus:text-[#f59e0b] focus:bg-white/5 cursor-pointer"
+                      onClick={() => setShowPremiumModal(true)}
+                    >
+                      <Crown className="mr-2 h-4 w-4" />
+                      Go Premium
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator className="bg-white/10" />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useAppStore, type Post } from '@/lib/store';
+import { useAppStore, type Post, CATEGORIES, CATEGORY_COLORS } from '@/lib/store';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +30,7 @@ export default function PostEditor({ post, onSaveComplete }: PostEditorProps) {
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
   const [thumbnail, setThumbnail] = useState('');
+  const [category, setCategory] = useState('Tech');
   const [published, setPublished] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -40,6 +41,7 @@ export default function PostEditor({ post, onSaveComplete }: PostEditorProps) {
       setExcerpt(post.excerpt || '');
       setContent(post.content);
       setThumbnail(post.thumbnail || '');
+      setCategory(post.category || 'Tech');
       setPublished(post.published);
     }
   }, [post]);
@@ -64,6 +66,7 @@ export default function PostEditor({ post, onSaveComplete }: PostEditorProps) {
           excerpt: excerpt || undefined,
           content,
           thumbnail: thumbnail || undefined,
+          category,
           published,
           readingTime: estimatedReadingTime,
         });
@@ -74,6 +77,7 @@ export default function PostEditor({ post, onSaveComplete }: PostEditorProps) {
           excerpt: excerpt || undefined,
           content,
           thumbnail: thumbnail || undefined,
+          category,
           published,
           readingTime: estimatedReadingTime,
         });
@@ -164,9 +168,23 @@ export default function PostEditor({ post, onSaveComplete }: PostEditorProps) {
         /* Preview Mode */
         <div className="glass-card p-8">
           <div className="prose-dark max-w-none">
-            <h1 className="text-3xl font-bold text-[#00f0ff] mb-4">
-              {title || 'Untitled Post'}
-            </h1>
+            <div className="flex items-center gap-3 mb-4">
+              <h1 className="text-3xl font-bold text-[#00f0ff]">
+                {title || 'Untitled Post'}
+              </h1>
+              {category && (
+                <span
+                  className="px-2.5 py-0.5 rounded-md text-xs font-semibold uppercase tracking-wider"
+                  style={{
+                    background: (CATEGORY_COLORS[category] || CATEGORY_COLORS.Tech).bg,
+                    color: (CATEGORY_COLORS[category] || CATEGORY_COLORS.Tech).text,
+                    border: `1px solid ${(CATEGORY_COLORS[category] || CATEGORY_COLORS.Tech).border}`,
+                  }}
+                >
+                  {category}
+                </span>
+              )}
+            </div>
             {excerpt && (
               <p className="text-lg text-white/50 italic mb-6">{excerpt}</p>
             )}
@@ -206,6 +224,34 @@ export default function PostEditor({ post, onSaveComplete }: PostEditorProps) {
               placeholder="A brief description of your post..."
               className="glass-input h-10 text-white placeholder:text-white/25"
             />
+          </div>
+
+          {/* Category */}
+          <div className="space-y-2">
+            <Label className="text-white/70 text-sm">Category</Label>
+            <div className="flex flex-wrap gap-2">
+              {CATEGORIES.filter(c => c !== 'All').map((cat) => {
+                const colors = CATEGORY_COLORS[cat];
+                const isActive = category === cat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setCategory(cat)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
+                      isActive ? '' : 'border border-white/10 bg-white/5 text-white/40 hover:border-white/20'
+                    }`}
+                    style={
+                      isActive && colors
+                        ? { background: colors.bg, color: colors.text, border: `1px solid ${colors.border}` }
+                        : undefined
+                    }
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Thumbnail */}

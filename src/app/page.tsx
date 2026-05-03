@@ -11,6 +11,7 @@ import RegisterPage from '@/components/RegisterPage';
 import Dashboard from '@/components/Dashboard';
 import PostDetail from '@/components/PostDetail';
 import ArtistProfile from '@/components/ArtistProfile';
+import PremiumCheckout from '@/components/PremiumCheckout';
 
 function ViewRenderer({ view }: { view: string }) {
   switch (view) {
@@ -90,6 +91,9 @@ export default function Home() {
           </div>
         </footer>
       </div>
+
+      {/* Premium Checkout Modal */}
+      <PremiumCheckout />
     </div>
   );
 }
