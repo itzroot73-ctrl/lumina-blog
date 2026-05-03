@@ -9,9 +9,6 @@ import ReactMarkdown from 'react-markdown';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { GoogleAdInArticle } from './ads';
-import CinematicVideoHero from './CinematicVideoHero';
-import ProjectInfoGrid from './ProjectInfoGrid';
-import MainChallenges from './MainChallenges';
 import {
   Heart,
   MessageCircle,
@@ -21,6 +18,14 @@ import {
   Send,
   Check,
   Trash2,
+  DollarSign,
+  Clock,
+  User,
+  Calendar,
+  Tag,
+  BookOpen,
+  Play,
+  Info,
 } from 'lucide-react';
 
 function CommentCard({ comment }: { comment: CommentType }) {
@@ -39,10 +44,7 @@ function CommentCard({ comment }: { comment: CommentType }) {
         </Avatar>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <button
-              onClick={() => {}}
-              className="text-sm font-medium text-white/80 hover:text-[#f97316] transition-colors"
-            >
+            <button className="text-sm font-medium text-white/80 hover:text-[#f97316] transition-colors">
               {comment.author.name}
             </button>
             <span className="text-xs text-white/30">
@@ -56,11 +58,9 @@ function CommentCard({ comment }: { comment: CommentType }) {
   );
 }
 
-// Scroll-triggered section wrapper
 function ScrollReveal({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
-
   return (
     <motion.div
       ref={ref}
@@ -78,16 +78,21 @@ export default function PostDetail() {
   const {
     currentPost,
     currentPostComments,
+    currentPostDonations,
+    currentPostTotalDonated,
     userLikedCurrentPost,
     isAuthenticated,
     user,
     navigate,
     loadPost,
     loadComments,
+    loadDonations,
     toggleLike,
     addComment,
     deletePost,
     viewParams,
+    setShowDonationModal,
+    setDonationPostId,
   } = useAppStore();
 
   const isPremium = user?.isPremium ?? false;
@@ -97,8 +102,9 @@ export default function PostDetail() {
   const [submittingComment, setSubmittingComment] = useState(false);
   const [likeAnimating, setLikeAnimating] = useState(false);
   const [shared, setShared] = useState(false);
+  const [isVideoHovered, setIsVideoHovered] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Split content into paragraph blocks and insert in-article ad after 3rd paragraph
   const contentWithAd = useMemo(() => {
     if (!currentPost?.content || isPremium) return currentPost?.content || '';
     const paragraphs = currentPost.content.split(/\n\n+/);
@@ -112,15 +118,21 @@ export default function PostDetail() {
     if (viewParams.id) {
       loadPost(viewParams.id);
       loadComments(viewParams.id);
+      loadDonations(viewParams.id);
     }
-  }, [viewParams.id, loadPost, loadComments]);
+  }, [viewParams.id, loadPost, loadComments, loadDonations]);
+
+  // Video hover preview
+  useEffect(() => {
+    if (isVideoHovered && videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    } else if (!isVideoHovered && videoRef.current) {
+      videoRef.current.pause();
+    }
+  }, [isVideoHovered]);
 
   const handleLike = async () => {
-    if (!isAuthenticated) {
-      toast.error('Please sign in to like posts');
-      navigate('login');
-      return;
-    }
+    if (!isAuthenticated) { toast.error('Please sign in to like posts'); navigate('login'); return; }
     if (!currentPost) return;
     setLikeAnimating(true);
     await toggleLike(currentPost.id);
@@ -130,11 +142,7 @@ export default function PostDetail() {
   const handleComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!commentText.trim()) return;
-    if (!isAuthenticated) {
-      toast.error('Please sign in to comment');
-      navigate('login');
-      return;
-    }
+    if (!isAuthenticated) { toast.error('Please sign in to comment'); navigate('login'); return; }
     if (!currentPost) return;
     setSubmittingComment(true);
     try {
@@ -154,9 +162,7 @@ export default function PostDetail() {
       setShared(true);
       toast.success('Link copied to clipboard!');
       setTimeout(() => setShared(false), 2000);
-    } catch {
-      toast.error('Failed to copy link');
-    }
+    } catch { toast.error('Failed to copy link'); }
   };
 
   const handleDelete = async () => {
@@ -171,6 +177,12 @@ export default function PostDetail() {
     }
   };
 
+  const handleSupport = () => {
+    if (!currentPost) return;
+    setDonationPostId(currentPost.id);
+    setShowDonationModal(true);
+  };
+
   if (!currentPost) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
@@ -182,9 +194,19 @@ export default function PostDetail() {
     );
   }
 
+  // Info grid data for SpiderHeck layout
+  const infoItems = [
+    { icon: User, label: 'AUTHOR', value: currentPost.author.name },
+    { icon: Calendar, label: 'PUBLISHED', value: new Date(currentPost.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) },
+    { icon: Clock, label: 'READ TIME', value: `${currentPost.readingTime} min` },
+    { icon: Tag, label: 'CATEGORY', value: currentPost.category },
+    { icon: Eye, label: 'VIEWS', value: currentPost.views.toLocaleString() },
+    { icon: DollarSign, label: 'TOTAL DONATED', value: `$${currentPostTotalDonated.toFixed(2)}` },
+  ];
+
   return (
     <div className="w-full">
-      {/* Back Button — floating above hero */}
+      {/* Back Button */}
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
@@ -199,109 +221,236 @@ export default function PostDetail() {
         </button>
       </motion.div>
 
-      {/* ====== CINEMATIC HERO SECTION ====== */}
-      <CinematicVideoHero
-        title={currentPost.title}
-        subtitle={currentPost.excerpt || undefined}
-        category={currentPost.category}
-        thumbnail={currentPost.thumbnail || undefined}
-      />
-
-      {/* ====== PROJECT INFO GRID ====== */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
-        <ProjectInfoGrid
-          authorName={currentPost.author.name}
-          authorUsername={currentPost.author.username}
-          authorAvatar={currentPost.author.avatar || undefined}
-          publishDate={currentPost.createdAt}
-          readingTime={currentPost.readingTime}
-          category={currentPost.category}
-          views={currentPost.views}
-          likesCount={currentPost._count?.likes || 0}
-          commentsCount={currentPost._count?.comments || 0}
-          onAuthorClick={() => navigate('profile', { username: currentPost.author.username })}
-        />
-      </div>
-
-      {/* ====== ACTION BAR (floating) ====== */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-        <ScrollReveal>
-          <div className="flex items-center gap-3 glass-action-bar px-4 py-2.5 rounded-full w-fit">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleLike}
-              className={`group transition-all rounded-full px-3 ${
-                userLikedCurrentPost
-                  ? 'text-red-400 hover:text-red-300'
-                  : 'text-white/40 hover:text-red-400'
-              }`}
+      {/* ====== SPIDERHECK VERTICAL SPLIT LAYOUT ====== */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* LEFT: Cinematic Video/Image */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7 }}
+            className="lg:w-[55%] shrink-0"
+          >
+            <div
+              className="relative w-full overflow-hidden rounded-2xl"
+              style={{ minHeight: '50vh' }}
+              onMouseEnter={() => setIsVideoHovered(true)}
+              onMouseLeave={() => setIsVideoHovered(false)}
             >
-              <Heart
-                className={`w-4 h-4 mr-1 transition-transform ${
-                  likeAnimating ? 'animate-heart-pulse' : ''
-                } ${userLikedCurrentPost ? 'fill-current' : ''}`}
-              />
-              <span className="text-xs">{currentPost._count?.likes || 0}</span>
-            </Button>
+              {/* Video background */}
+              <video
+                ref={videoRef}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+              >
+                <source src="/hero-bg.mp4" type="video/mp4" />
+              </video>
 
-            <div className="w-px h-4 bg-white/10" />
-
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="text-white/40 hover:text-[#f97316] rounded-full px-3"
-            >
-              <MessageCircle className="w-4 h-4 mr-1" />
-              <span className="text-xs">{currentPost._count?.comments || 0}</span>
-            </Button>
-
-            <div className="w-px h-4 bg-white/10" />
-
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleShare}
-              className="text-white/40 hover:text-[#10b981] rounded-full px-3"
-            >
-              {shared ? (
-                <Check className="w-4 h-4 mr-1 text-[#10b981]" />
-              ) : (
-                <Share2 className="w-4 h-4 mr-1" />
+              {/* Thumbnail overlay when not hovered */}
+              {currentPost.thumbnail && (
+                <img
+                  src={currentPost.thumbnail}
+                  alt={currentPost.title}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isVideoHovered ? 'opacity-0' : 'opacity-100'}`}
+                />
               )}
-              <span className="text-xs">{shared ? 'Copied!' : 'Share'}</span>
-            </Button>
 
-            {isAuthor && (
-              <>
-                <div className="w-px h-4 bg-white/10" />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleDelete}
-                  className="text-white/40 hover:text-red-400 rounded-full px-3"
+              {/* Play indicator on hover */}
+              <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${isVideoHovered ? 'opacity-100' : 'opacity-0'}`}>
+                <div className="w-16 h-16 rounded-full bg-[#f97316]/20 backdrop-blur-sm border border-[#f97316]/30 flex items-center justify-center">
+                  <Play className="w-7 h-7 text-[#f97316] fill-[#f97316]" />
+                </div>
+              </div>
+
+              {/* Gradient overlays */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/40 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-[#0a0a0a]/30" />
+
+              {/* Scanlines */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px)',
+                  opacity: 0.4,
+                }}
+              />
+
+              {/* Bottom accent line */}
+              <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#f97316]/30 to-transparent" />
+
+              {/* Title overlay at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 z-10 p-6 sm:p-8">
+                <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-[#f97316]/8 border border-[#f97316]/20 text-[#f97316]/80 mb-4">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#f97316] mr-2 animate-pulse shadow-[0_0_6px_#f97316]" />
+                  {currentPost.category}
+                </span>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-[0.95] tracking-tight" style={{ textShadow: '0 0 40px rgba(249,115,22,0.15)' }}>
+                  {currentPost.title}
+                </h1>
+                {currentPost.excerpt && (
+                  <p className="text-base text-white/35 mt-3 max-w-xl leading-relaxed">{currentPost.excerpt}</p>
+                )}
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 1, ease: 'easeOut', delay: 0.5 }}
+                  className="mt-4 h-[2px] w-32 origin-left bg-gradient-to-r from-[#f97316] via-[#f59e0b] to-transparent"
+                  style={{ boxShadow: '0 0 8px rgba(249,115,22,0.4)' }}
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* RIGHT: Project Info Grid */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="lg:w-[45%] flex flex-col gap-4"
+          >
+            {/* Section label */}
+            <div className="mb-2">
+              <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-white/25 flex items-center gap-2">
+                <span className="w-6 h-px bg-[#f97316]/30" />
+                Story Info
+              </h3>
+            </div>
+
+            {/* Info grid */}
+            <div className="grid grid-cols-2 gap-3">
+              {infoItems.map((item, index) => (
+                <motion.div
+                  key={item.label}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.3 + index * 0.06 }}
+                  className="glass-info-card p-4"
                 >
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <item.icon className="w-3 h-3 text-[#f97316]/40" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/20">
+                      {item.label}
+                    </span>
+                  </div>
+                  {item.label === 'AUTHOR' ? (
+                    <button
+                      onClick={() => navigate('profile', { username: currentPost.author.username })}
+                      className="flex items-center gap-2 group"
+                    >
+                      <Avatar className="h-7 w-7 border border-white/8 group-hover:border-[#f97316]/25 transition-colors">
+                        <AvatarImage src={currentPost.author.avatar || undefined} alt={currentPost.author.name} />
+                        <AvatarFallback className="bg-gradient-to-br from-[#f97316]/20 to-[#f59e0b]/20 text-white text-xs">
+                          {currentPost.author.name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="text-left">
+                        <p className="text-sm font-semibold text-white group-hover:text-[#f97316] transition-colors">{currentPost.author.name}</p>
+                        <p className="text-[10px] text-white/25">@{currentPost.author.username}</p>
+                      </div>
+                    </button>
+                  ) : item.label === 'CATEGORY' ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-[#f97316]/8 text-[#f97316] border border-[#f97316]/15">
+                      {item.value}
+                    </span>
+                  ) : item.label === 'TOTAL DONATED' ? (
+                    <p className="text-sm font-semibold text-[#10b981]">{item.value}</p>
+                  ) : (
+                    <p className="text-sm font-semibold text-white">{item.value}</p>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Action Bar */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              className="flex items-center gap-2 mt-2"
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLike}
+                className={`group transition-all rounded-full px-3 ${
+                  userLikedCurrentPost ? 'text-red-400 hover:text-red-300' : 'text-white/40 hover:text-red-400'
+                }`}
+              >
+                <Heart className={`w-4 h-4 mr-1 transition-transform ${likeAnimating ? 'animate-heart-pulse' : ''} ${userLikedCurrentPost ? 'fill-current' : ''}`} />
+                <span className="text-xs">{currentPost._count?.likes || 0}</span>
+              </Button>
+
+              <Button variant="ghost" size="sm" onClick={() => document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' })} className="text-white/40 hover:text-[#f97316] rounded-full px-3">
+                <MessageCircle className="w-4 h-4 mr-1" />
+                <span className="text-xs">{currentPost._count?.comments || 0}</span>
+              </Button>
+
+              <Button variant="ghost" size="sm" onClick={handleShare} className="text-white/40 hover:text-[#10b981] rounded-full px-3">
+                {shared ? <Check className="w-4 h-4 mr-1 text-[#10b981]" /> : <Share2 className="w-4 h-4 mr-1" />}
+                <span className="text-xs">{shared ? 'Copied!' : 'Share'}</span>
+              </Button>
+
+              {isAuthor && (
+                <Button variant="ghost" size="sm" onClick={handleDelete} className="text-white/40 hover:text-red-400 rounded-full px-3">
                   <Trash2 className="w-4 h-4 mr-1" />
                   <span className="text-xs">Delete</span>
                 </Button>
-              </>
-            )}
-          </div>
-        </ScrollReveal>
-      </div>
+              )}
 
-      {/* ====== MAIN CHALLENGES SECTION ====== */}
-      {currentPost.excerpt && (
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-          <MainChallenges excerpt={currentPost.excerpt} />
+              {/* Support the Artist button */}
+              <Button
+                size="sm"
+                onClick={handleSupport}
+                className="ml-auto bg-gradient-to-r from-[#f97316] to-[#ea580c] hover:opacity-90 text-white border-0 font-bold rounded-full px-4 text-xs"
+                style={{ boxShadow: '0 0 15px rgba(249,115,22,0.25)' }}
+              >
+                <Heart className="w-3.5 h-3.5 mr-1.5 fill-current" />
+                Support the Artist
+              </Button>
+            </motion.div>
+
+            {/* Transparency note */}
+            <div className="flex items-start gap-2 p-3 rounded-lg bg-[#f97316]/5 border border-[#f97316]/10">
+              <Info className="w-4 h-4 text-[#f97316]/40 shrink-0 mt-0.5" />
+              <p className="text-[11px] text-white/25 leading-relaxed">
+                20% of your support helps keep Lumina free for everyone. The remaining 80% goes directly to the artist.
+              </p>
+            </div>
+
+            {/* Recent donors preview */}
+            {currentPostDonations.length > 0 && (
+              <div className="glass-card p-4">
+                <p className="text-xs font-bold text-white/30 uppercase tracking-wider mb-3">Recent Supporters</p>
+                <div className="space-y-2">
+                  {currentPostDonations.slice(0, 3).map((donation) => (
+                    <div key={donation.id} className="flex items-center gap-2">
+                      <Avatar className="h-6 w-6 border border-white/10">
+                        <AvatarImage src={donation.donor.avatar || undefined} alt={donation.donor.name} />
+                        <AvatarFallback className="bg-gradient-to-br from-[#f97316]/20 to-[#f59e0b]/20 text-white text-[10px]">
+                          {donation.donor.name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-xs text-white/50 flex-1">{donation.donor.name}</span>
+                      <span className="text-xs font-bold text-[#10b981]">${donation.amount}</span>
+                    </div>
+                  ))}
+                  {currentPostDonations.length > 3 && (
+                    <p className="text-[10px] text-white/20 text-center">+{currentPostDonations.length - 3} more supporters</p>
+                  )}
+                </div>
+              </div>
+            )}
+          </motion.div>
         </div>
-      )}
+      </div>
 
       {/* ====== STORY CONTENT ====== */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
         <ScrollReveal>
-          {/* Section label */}
           <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-white/30 flex items-center gap-2 mb-5">
             <span className="w-6 h-px bg-[#10b981]/40" />
             The Story
@@ -333,7 +482,6 @@ export default function PostDetail() {
             </span>
           </h3>
 
-          {/* Comment Input */}
           {isAuthenticated ? (
             <form onSubmit={handleComment} className="mb-8">
               <div className="flex gap-3">
@@ -359,18 +507,11 @@ export default function PostDetail() {
           ) : (
             <div className="glass-card p-4 mb-8 text-center rounded-xl">
               <p className="text-white/40 text-sm">
-                <button
-                  onClick={() => navigate('login')}
-                  className="text-[#f97316] hover:underline"
-                >
-                  Sign in
-                </button>{' '}
-                to join the conversation
+                <button onClick={() => navigate('login')} className="text-[#f97316] hover:underline">Sign in</button> to join the conversation
               </p>
             </div>
           )}
 
-          {/* Comments List */}
           <div className="space-y-3">
             <AnimatePresence>
               {currentPostComments.map((comment) => (

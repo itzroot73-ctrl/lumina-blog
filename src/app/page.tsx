@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import AnimatedBackground from '@/components/AnimatedBackground';
+import LandingPage from '@/components/LandingPage';
 import HomeFeed from '@/components/HomeFeed';
 import LoginPage from '@/components/LoginPage';
 import RegisterPage from '@/components/RegisterPage';
@@ -12,11 +13,14 @@ import Dashboard from '@/components/Dashboard';
 import PostDetail from '@/components/PostDetail';
 import ArtistProfile from '@/components/ArtistProfile';
 import PremiumCheckout from '@/components/PremiumCheckout';
+import SupportArtistModal from '@/components/SupportArtistModal';
 import { AdSenseProvider } from '@/components/ads';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
 
 function ViewRenderer({ view }: { view: string }) {
-  switch (view) {
+  // Map 'browse' to 'home' for guest feed access
+  const actualView = view === 'browse' ? 'home' : view;
+  switch (actualView) {
     case 'home':
       return <HomeFeed />;
     case 'login':
@@ -35,7 +39,7 @@ function ViewRenderer({ view }: { view: string }) {
 }
 
 export default function Home() {
-  const { currentView, checkAuth, seeded, setSeeded, cookieConsent, setCookieConsent } = useAppStore();
+  const { currentView, checkAuth, isAuthenticated, isLoadingAuth, seeded, setSeeded, cookieConsent, setCookieConsent } = useAppStore();
 
   useEffect(() => {
     checkAuth();
@@ -57,56 +61,81 @@ export default function Home() {
     }
   }, [seeded, setSeeded]);
 
-  const handleCookieAccept = () => {
-    setCookieConsent(true);
-  };
+  const handleCookieAccept = () => { setCookieConsent(true); };
+  const handleCookieDecline = () => { setCookieConsent(false); };
+  const handleCookieDismiss = () => { setCookieConsent(false); };
 
-  const handleCookieDecline = () => {
-    setCookieConsent(false);
-  };
+  // Loading state while checking auth
+  if (isLoadingAuth) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center"
+        >
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#f97316] to-[#ea580c] flex items-center justify-center mx-auto mb-4 animate-pulse"
+            style={{ boxShadow: '0 0 30px rgba(249,115,22,0.3)' }}
+          >
+            <span className="text-white text-xl font-black">L</span>
+          </div>
+          <div className="w-6 h-6 border-2 border-[#f97316]/30 border-t-[#f97316] rounded-full animate-spin mx-auto" />
+        </motion.div>
+      </div>
+    );
+  }
 
-  const handleCookieDismiss = () => {
-    setCookieConsent(false);
-  };
+  // Unauthenticated users see landing page on 'home', but can browse via 'browse'
+  const showLanding = !isAuthenticated && currentView === 'home';
 
   return (
     <AdSenseProvider cookieConsent={cookieConsent}>
       <div className="min-h-screen bg-[#0a0a0a] relative">
-        <AnimatedBackground />
-        <div className="relative z-10 flex flex-col min-h-screen">
-          <Navbar />
-          <main className="flex-1">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentView}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ViewRenderer view={currentView} />
-              </motion.div>
-            </AnimatePresence>
-          </main>
+        {/* Landing page — full cinematic pre-login experience */}
+        {showLanding ? (
+          <LandingPage />
+        ) : (
+          <>
+            <AnimatedBackground />
+            <div className="relative z-10 flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-1">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentView}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ViewRenderer view={currentView} />
+                  </motion.div>
+                </AnimatePresence>
+              </main>
 
-          {/* Footer — Orange & Black styled */}
-          <footer className="glass-nav-cinematic border-t border-white/[0.03] mt-auto">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-2.5">
-                  <img src="/logo.png" alt="Lumin" className="h-5 w-5 rounded" />
-                  <span className="text-xs text-white/25 font-medium">Lumin Blog Platform</span>
+              {/* Footer */}
+              <footer className="glass-nav-cinematic border-t border-white/[0.03] mt-auto">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-2.5">
+                      <img src="/logo.png" alt="Lumina" className="h-5 w-5 rounded" />
+                      <span className="text-xs text-white/25 font-medium">Lumina Blog Platform</span>
+                    </div>
+                    <p className="text-[10px] text-white/10 tracking-wider uppercase">
+                      Next.js / Tailwind / Framer Motion
+                    </p>
+                  </div>
                 </div>
-                <p className="text-[10px] text-white/10 tracking-wider uppercase">
-                  Next.js / Tailwind / Framer Motion
-                </p>
-              </div>
+              </footer>
             </div>
-          </footer>
-        </div>
+          </>
+        )}
 
         {/* Premium Checkout Modal */}
         <PremiumCheckout />
+
+        {/* Support Artist Donation Modal */}
+        <SupportArtistModal />
 
         {/* Cookie Consent Banner */}
         <CookieConsentBanner

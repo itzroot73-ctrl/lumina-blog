@@ -17,6 +17,10 @@ export default function Navbar() {
 
   const isPremium = user?.isPremium ?? false;
 
+  const handleLogoClick = () => {
+    navigate(isAuthenticated ? 'home' : 'browse');
+  };
+
   return (
     <nav className="glass-nav-cinematic sticky top-0 z-50">
       {/* Orange & Black subtle top glow line */}
@@ -26,13 +30,13 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-14">
           {/* Logo — Lumin branding with logo image */}
           <button
-            onClick={() => navigate('home')}
+            onClick={handleLogoClick}
             className="flex items-center gap-3 group cursor-pointer"
           >
-            <img src="/logo.png" alt="Lumin" className="h-8 w-8 rounded-md" />
+            <img src="/logo.png" alt="Lumina" className="h-8 w-8 rounded-md" />
             <span className="text-lg font-black tracking-tight hidden sm:inline">
-              <span className="text-[#f97316] text-glow-orange">L</span>
-              <span className="text-white/80">umin</span>
+              <span className="text-[#f97316] text-glow-orange">Lum</span>
+              <span className="text-white/80">ina</span>
             </span>
           </button>
 
@@ -40,7 +44,7 @@ export default function Navbar() {
           <div className="flex items-center gap-1">
             {/* Feed nav item */}
             <button
-              onClick={() => navigate('home')}
+              onClick={() => navigate(isAuthenticated ? 'home' : 'browse')}
               className="nav-link-item group"
             >
               <Rss className="w-3.5 h-3.5 text-[#f97316]/40 group-hover:text-[#f97316] transition-colors" />

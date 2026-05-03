@@ -4,12 +4,11 @@ import { useAppStore, type Post, CATEGORIES, CATEGORY_COLORS, type Category } fr
 import { motion, AnimatePresence, LayoutGroup, useInView } from 'framer-motion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Heart, MessageCircle, Clock, Eye, Search, Sparkles, TrendingUp, ChevronRight } from 'lucide-react';
+import { Heart, MessageCircle, Clock, Eye, Search, Sparkles, TrendingUp, ChevronRight, Play, DollarSign } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GoogleAdInFeed, GoogleAdSidebar } from './ads';
 
-// Use the user-uploaded video
 const HERO_VIDEO_URL = '/hero-bg.mp4';
 
 function CategoryBadge({ category }: { category: string }) {
@@ -29,33 +28,75 @@ function CategoryBadge({ category }: { category: string }) {
 }
 
 function PostCard({ post, index }: { post: Post; index: number }) {
-  const { navigate } = useAppStore();
+  const { navigate, user, setShowDonationModal, setDonationPostId } = useAppStore();
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
+  const [isHovered, setIsHovered] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleSupport = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDonationPostId(post.id);
+    setShowDonationModal(true);
+  };
+
+  // Play video on hover
+  useEffect(() => {
+    if (isHovered && videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    } else if (!isHovered && videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  }, [isHovered]);
 
   return (
     <motion.div
       ref={ref}
       layout
       layoutId={`post-${post.id}`}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      initial={{ opacity: 0, y: 50, scale: 0.95 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
       exit={{ opacity: 0, scale: 0.9, y: -10 }}
-      transition={{ duration: 0.5, delay: index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
-      whileHover={{ y: -6, transition: { duration: 0.25 } }}
+      transition={{ duration: 0.5, delay: index * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
+      whileHover={{ y: -8, transition: { duration: 0.25 } }}
       className="glass-card overflow-hidden cursor-pointer group"
       onClick={() => navigate('post', { id: post.id })}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Thumbnail — 16:9 aspect ratio */}
+      {/* Thumbnail — 16:9 aspect ratio with video preview */}
       {post.thumbnail && (
         <div className="relative w-full overflow-hidden" style={{ aspectRatio: '16/9' }}>
+          {/* Static image */}
           <img
             src={post.thumbnail}
             alt={post.title}
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            className={`w-full h-full object-cover transition-all duration-700 ${isHovered ? 'opacity-0 scale-105' : 'opacity-100'}`}
             loading="lazy"
           />
+
+          {/* Video preview on hover */}
+          <video
+            ref={videoRef}
+            muted
+            loop
+            playsInline
+            preload="none"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+            poster={post.thumbnail}
+          >
+            <source src={HERO_VIDEO_URL} type="video/mp4" />
+          </video>
+
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/30 to-transparent" />
+
+          {/* Play icon on hover */}
+          <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="w-12 h-12 rounded-full bg-[#f97316]/20 backdrop-blur-sm border border-[#f97316]/30 flex items-center justify-center">
+              <Play className="w-5 h-5 text-[#f97316] fill-[#f97316]" />
+            </div>
+          </div>
 
           {/* Category Badge on thumbnail */}
           <div className="absolute top-3 left-3">
@@ -111,19 +152,25 @@ function PostCard({ post, index }: { post: Post; index: number }) {
             </span>
           </button>
 
-          <div className="flex items-center gap-3 text-xs text-white/25">
-            <span className="flex items-center gap-1">
-              <Heart className="w-3 h-3" />
-              {post._count?.likes || 0}
-            </span>
-            <span className="flex items-center gap-1">
-              <MessageCircle className="w-3 h-3" />
-              {post._count?.comments || 0}
-            </span>
-            <span className="flex items-center gap-1">
-              <Eye className="w-3 h-3" />
-              {post.views}
-            </span>
+          <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-3 text-xs text-white/25">
+              <span className="flex items-center gap-1">
+                <Heart className="w-3 h-3" />
+                {post._count?.likes || 0}
+              </span>
+              <span className="flex items-center gap-1">
+                <Eye className="w-3 h-3" />
+                {post.views}
+              </span>
+            </div>
+            {/* Support button on card */}
+            <button
+              onClick={handleSupport}
+              className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 px-2 py-1 rounded-full bg-[#f97316]/10 border border-[#f97316]/20 text-[#f97316] text-[10px] font-bold hover:bg-[#f97316]/20"
+            >
+              <DollarSign className="w-3 h-3" />
+              Support
+            </button>
           </div>
         </div>
       </div>
@@ -140,29 +187,16 @@ function NoResultsCard({ searchQuery }: { searchQuery: string }) {
       className="glass-card p-12 text-center col-span-full"
     >
       <motion.div
-        animate={{
-          y: [0, -8, 0],
-          rotate: [0, 5, -5, 0],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
+        animate={{ y: [0, -8, 0], rotate: [0, 5, -5, 0] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#f97316]/10 to-[#f59e0b]/10 border border-[#f97316]/10 flex items-center justify-center"
       >
         <Search className="w-8 h-8 text-[#f97316]/20" />
       </motion.div>
       <h3 className="text-xl font-bold text-white/60 mb-2">No results found</h3>
-      <p className="text-white/30 text-sm mb-1">
-        We couldn&apos;t find anything matching
-      </p>
-      <p className="text-[#f97316]/60 text-sm font-medium mb-6">
-        &ldquo;{searchQuery}&rdquo;
-      </p>
-      <p className="text-white/20 text-xs">
-        Try adjusting your search or explore different categories
-      </p>
+      <p className="text-white/30 text-sm mb-1">We couldn&apos;t find anything matching</p>
+      <p className="text-[#f97316]/60 text-sm font-medium mb-6">&ldquo;{searchQuery}&rdquo;</p>
+      <p className="text-white/20 text-xs">Try adjusting your search or explore different categories</p>
     </motion.div>
   );
 }
@@ -177,7 +211,6 @@ export default function HomeFeed() {
     loadPosts();
   }, [loadPosts]);
 
-  // Debounced search
   const debouncedSearch = useCallback(
     (value: string) => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -201,14 +234,12 @@ export default function HomeFeed() {
 
   const isPremium = user?.isPremium ?? false;
 
-  // Insert Google In-Feed ad slots between every 4-5 posts
   const renderPostsWithAds = () => {
     const elements: React.ReactNode[] = [];
     posts.forEach((post, index) => {
       elements.push(
         <PostCard key={post.id} post={post} index={index} />
       );
-      // Insert Google In-Feed ad after every 4th post (but not after the last one)
       if (!isPremium && (index + 1) % 4 === 0 && index < posts.length - 1) {
         elements.push(
           <GoogleAdInFeed key={`ad-infeed-${index}`} index={Math.floor(index / 4)} />
@@ -228,7 +259,6 @@ export default function HomeFeed() {
         className="relative w-full overflow-hidden rounded-2xl mb-14"
         style={{ minHeight: '55vh' }}
       >
-        {/* Video Background */}
         <video
           autoPlay
           loop
@@ -239,31 +269,18 @@ export default function HomeFeed() {
           <source src={HERO_VIDEO_URL} type="video/mp4" />
         </video>
 
-        {/* Multi-layer gradient overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-[#0a0a0a]/20" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/70 via-transparent to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/40 via-transparent to-[#0a0a0a]/40" />
         <div className="absolute inset-0 bg-[#0a0a0a]/30" />
 
-        {/* Scanlines */}
-        <div
-          className="absolute inset-0 pointer-events-none"
+        <div className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage:
-              'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px)',
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px)',
             opacity: 0.6,
           }}
         />
 
-        {/* Subtle noise texture */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-[0.02]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          }}
-        />
-
-        {/* Bottom accent line */}
         <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#f97316]/25 to-transparent" />
 
         {/* Hero Content */}
@@ -307,20 +324,20 @@ export default function HomeFeed() {
         </div>
       </motion.div>
 
-      {/* Search Bar */}
+      {/* ====== FROSTED ORANGE GLASS SEARCH BAR ====== */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="max-w-xl mx-auto mb-6"
+        className="max-w-2xl mx-auto mb-8"
       >
-        <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#f97316]/30" />
+        <div className="frosted-orange-input rounded-2xl relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#f97316]/40" />
           <Input
             value={search}
             onChange={handleSearchChange}
             placeholder="Search articles, topics, authors..."
-            className="glass-input pl-11 h-12 text-white placeholder:text-white/20 text-sm rounded-xl border-[#f97316]/10 focus:border-[#f97316]/30"
+            className="bg-transparent border-0 pl-12 h-14 text-white placeholder:text-white/25 text-sm rounded-2xl focus-visible:ring-0 focus-visible:ring-offset-0"
           />
           {search && (
             <button
@@ -328,7 +345,7 @@ export default function HomeFeed() {
                 setSearch('');
                 loadPosts(undefined, activeCategory);
               }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-[#f97316]/60 text-xs transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-[#f97316]/60 text-xs transition-colors"
             >
               Clear
             </button>
@@ -343,12 +360,15 @@ export default function HomeFeed() {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="flex items-center justify-center gap-2 mb-12 flex-wrap"
       >
-        {CATEGORIES.map((cat) => {
+        {CATEGORIES.map((cat, i) => {
           const colors = CATEGORY_COLORS[cat];
           const isActive = activeCategory === cat;
           return (
-            <button
+            <motion.button
               key={cat}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 + i * 0.04 }}
               onClick={() => handleCategoryChange(cat)}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
                 isActive
@@ -374,7 +394,7 @@ export default function HomeFeed() {
               }
             >
               {cat}
-            </button>
+            </motion.button>
           );
         })}
       </motion.div>
@@ -413,9 +433,7 @@ export default function HomeFeed() {
                   <Sparkles className="w-6 h-6 text-[#f97316]/20" />
                 </div>
                 <p className="text-white/40 text-lg font-medium">No articles yet</p>
-                <p className="text-white/20 text-sm mt-2">
-                  Be the first to share your story
-                </p>
+                <p className="text-white/20 text-sm mt-2">Be the first to share your story</p>
                 <button
                   onClick={() => navigate('register')}
                   className="mt-4 text-[#f97316] hover:underline text-sm"
@@ -444,10 +462,8 @@ export default function HomeFeed() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="hidden xl:block w-72 shrink-0 space-y-6"
           >
-            {/* Google Sidebar Display Ad */}
             <GoogleAdSidebar />
 
-            {/* Trending Topics */}
             <div className="glass-card p-5">
               <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-[#f59e0b]" />
@@ -474,7 +490,6 @@ export default function HomeFeed() {
               </div>
             </div>
 
-            {/* Second Sidebar Ad */}
             <GoogleAdSidebar className="mt-6" />
           </motion.aside>
         )}

@@ -97,6 +97,33 @@ html {
 }
 
 /* ========================================
+   Frosted Orange Glass Effect System
+   ======================================== */
+
+.frosted-orange {
+  background: rgba(249, 115, 22, 0.06);
+  backdrop-filter: blur(25px) saturate(1.5);
+  -webkit-backdrop-filter: blur(25px) saturate(1.5);
+  border: 1px solid rgba(249, 115, 22, 0.15);
+  box-shadow: 0 0 40px rgba(249, 115, 22, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.frosted-orange-input {
+  background: rgba(249, 115, 22, 0.04);
+  backdrop-filter: blur(30px) saturate(1.4);
+  -webkit-backdrop-filter: blur(30px) saturate(1.4);
+  border: 1px solid rgba(249, 115, 22, 0.12);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+}
+
+.frosted-orange-input:focus-within,
+.frosted-orange-input:focus {
+  border-color: rgba(249, 115, 22, 0.35);
+  box-shadow: 0 0 30px rgba(249, 115, 22, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ========================================
    Orange & Black Glass Effect System
    ======================================== */
 
@@ -118,7 +145,7 @@ html {
 }
 
 .glass-card:hover {
-  border-color: rgba(249, 115, 22, 0.2);
+  border-color: rgba(249, 115, 22, 0.3);
   box-shadow: 0 0 40px rgba(249, 115, 22, 0.05), inset 0 1px 0 rgba(255,255,255,0.03);
   transform: translateY(-3px);
 }

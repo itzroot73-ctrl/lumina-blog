@@ -58,8 +58,22 @@ export interface ProfileData {
     totalViews: number;
     totalLikes: number;
     estimatedRevenue?: number;
+    totalDonated?: number;
   };
   posts: Post[];
+}
+
+export interface Donation {
+  id: string;
+  amount: number;
+  artistAmount: number;
+  platformFee: number;
+  postId: string;
+  donorId: string;
+  artistId: string;
+  message?: string | null;
+  createdAt: string;
+  donor: PostAuthor;
 }
 
 export const CATEGORIES = ['All', 'Tech', 'Design', 'Art', 'Lifestyle', 'Science', 'Business'] as const;
@@ -124,6 +138,17 @@ interface AppState {
   // Cookie Consent
   cookieConsent: boolean;
   setCookieConsent: (v: boolean) => void;
+
+  // Donations
+  currentPostDonations: Donation[];
+  currentPostTotalDonated: number;
+  donationLoading: boolean;
+  loadDonations: (postId: string) => Promise<void>;
+  createDonation: (postId: string, amount: number, message?: string) => Promise<void>;
+  showDonationModal: boolean;
+  setShowDonationModal: (v: boolean) => void;
+  donationPostId: string | null;
+  setDonationPostId: (id: string | null) => void;
 
   // Seeded flag
   seeded: boolean;
@@ -415,6 +440,52 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
     set({ cookieConsent: v });
   },
+
+  // Donations
+  currentPostDonations: [],
+  currentPostTotalDonated: 0,
+  donationLoading: false,
+  showDonationModal: false,
+  donationPostId: null,
+
+  loadDonations: async (postId) => {
+    set({ donationLoading: true });
+    try {
+      const res = await fetch(`/api/donations?postId=${postId}`);
+      const data = await res.json();
+      if (res.ok) {
+        set({
+          currentPostDonations: data.donations,
+          currentPostTotalDonated: data.totalDonated,
+          donationLoading: false,
+        });
+      } else {
+        set({ donationLoading: false });
+      }
+    } catch {
+      set({ donationLoading: false });
+    }
+  },
+
+  createDonation: async (postId, amount, message) => {
+    const state = get();
+    if (!state.token) throw new Error('Not authenticated');
+    const res = await fetch('/api/donations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${state.token}`,
+      },
+      body: JSON.stringify({ postId, amount, message }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to create donation');
+    // Reload donations after creating
+    await get().loadDonations(postId);
+  },
+
+  setShowDonationModal: (v) => set({ showDonationModal: v }),
+  setDonationPostId: (id) => set({ donationPostId: id }),
 
   // Seeded
   seeded: false,

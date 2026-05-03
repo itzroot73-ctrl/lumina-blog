@@ -53,7 +53,7 @@ export default function LoginPage() {
               <Lock className="w-6 h-6 text-white" />
             </motion.div>
             <h2 className="text-2xl font-bold text-white">Welcome back</h2>
-            <p className="text-white/40 text-sm mt-1">Sign in to your account</p>
+            <p className="text-white/40 text-sm mt-1">Sign in to Lumina</p>
           </div>
 
           {/* Demo credentials hint */}

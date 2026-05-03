@@ -22,6 +22,8 @@ model User {
   posts         Post[]
   comments      Comment[]
   likes         Like[]
+  donorDonations  Donation[] @relation("DonorDonations")
+  artistDonations Donation[] @relation("ArtistDonations")
 }
 
 model Post {
@@ -41,6 +43,7 @@ model Post {
   author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments      Comment[]
   likes         Like[]
+  donations     Donation[]
 }
 
 model Comment {
@@ -62,4 +65,19 @@ model Like {
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([postId, userId])
+}
+
+model Donation {
+  id            String    @id @default(cuid())
+  amount        Float
+  artistAmount  Float
+  platformFee   Float
+  postId        String
+  donorId       String
+  artistId      String
+  message       String?
+  createdAt     DateTime  @default(now())
+  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  donor         User      @relation("DonorDonations", fields: [donorId], references: [id], onDelete: Cascade)
+  artist        User      @relation("ArtistDonations", fields: [artistId], references: [id], onDelete: Cascade)
 }

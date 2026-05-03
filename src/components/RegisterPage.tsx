@@ -31,7 +31,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await register({ email, name, username, password, role });
-      toast.success('Welcome to Artisan!');
+      toast.success('Welcome to Lumina!');
       navigate('home');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Registration failed');
@@ -59,7 +59,7 @@ export default function RegisterPage() {
             >
               <User className="w-6 h-6 text-white" />
             </motion.div>
-            <h2 className="text-2xl font-bold text-white">Join Artisan</h2>
+            <h2 className="text-2xl font-bold text-white">Join Lumina</h2>
             <p className="text-white/40 text-sm mt-1">Create your account</p>
           </div>
 
