@@ -57,6 +57,7 @@ export interface ProfileData {
     totalPosts: number;
     totalViews: number;
     totalLikes: number;
+    estimatedRevenue?: number;
   };
   posts: Post[];
 }

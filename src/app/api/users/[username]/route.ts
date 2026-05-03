@@ -42,7 +42,9 @@ export async function GET(
         totalPosts: user.posts.length,
         totalViews,
         totalLikes,
+        estimatedRevenue: parseFloat((totalViews * 0.02 * 0.20).toFixed(2)),
       },
+      posts: user.posts,
     });
   } catch (error) {
     console.error('Get profile error:', error);

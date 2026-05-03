@@ -13,6 +13,7 @@ import {
   Calendar,
   TrendingUp,
   FileText,
+  DollarSign,
 } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 
@@ -104,7 +105,8 @@ export default function ArtistProfile() {
     );
   }
 
-  const { user, stats, posts } = profileData;
+  const { user, stats } = profileData;
+  const posts = profileData.posts || [];
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -159,7 +161,7 @@ export default function ArtistProfile() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-3 gap-4 mt-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -197,6 +199,19 @@ export default function ArtistProfile() {
               <AnimatedCounter target={stats.totalLikes} />
             </p>
             <p className="text-xs text-white/40 mt-1">Total Likes</p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="glass-card p-4 text-center glow-emerald"
+          >
+            <DollarSign className="w-5 h-5 text-[#10b981] mx-auto mb-2" />
+            <p className="text-2xl font-bold text-white">
+              ${(stats.estimatedRevenue || 0).toFixed(2)}
+            </p>
+            <p className="text-xs text-white/40 mt-1">Revenue (20%)</p>
           </motion.div>
         </div>
 

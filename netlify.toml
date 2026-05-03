@@ -1,6 +1,62 @@
 [build]
-  command = "npm run build"
+  command = """
+    prisma generate &&
+    next build
+  """
   publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--legacy-peer-deps"
+  NEXT_PRIVATE_STANDALONE_CONFIG = "true"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# API routes and serverless functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/nextjs/:splat"
+  status = 200
+
+# SPA fallback for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"]}
+
+# Static assets caching
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/logo.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/logo.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/hero-bg.mp4"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type = "video/mp4"
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

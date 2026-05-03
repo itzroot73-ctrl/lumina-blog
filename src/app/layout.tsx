@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "A cinematic, glassmorphic blog platform for artists and creators. Discover, create, and share content in a stunning dark interface.",
   keywords: ["Lumin", "Blog", "Glassmorphic", "Dark Theme", "Creative Writing", "Cinematic"],
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: "/logo.svg",
   },
 };
 
