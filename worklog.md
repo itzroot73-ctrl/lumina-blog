@@ -1,81 +1,22 @@
 ---
-Task ID: 4
-Agent: main
-Task: SpiderHeck-style Cinematic UI Overhaul — Video Backgrounds, Info Grid, Challenges, Scroll Animations
+Task ID: 1
+Agent: Main Agent
+Task: SpiderHeck-Inspired Cinematic UI Upgrade
 
 Work Log:
-- Created CinematicVideoHero component (src/components/CinematicVideoHero.tsx):
-  - HTML5 <video> tag with autoplay, loop, muted, playsInline for mobile
-  - Category-based video selection (Tech→matrix, Art→creative, etc.)
-  - Multi-layer gradient overlays for cinematic depth (top/bottom/left-right)
-  - Animated scanlines effect for retro-cinematic feel
-  - Parallax scroll via Framer Motion useScroll/useTransform (videoScale, textY, opacity)
-  - Video controls (play/pause, mute/unmute) with glassmorphic buttons
-  - Category chip tag with animated pulse dot
-  - Staggered entrance animations for title, subtitle, decorative line
-  - Fallback to thumbnail poster if video hasn't loaded
-- Created ProjectInfoGrid component (src/components/ProjectInfoGrid.tsx):
-  - 2x3 responsive grid (Publisher, Publish Date, Est. Read Time, Category, Views, Engagement)
-  - Each cell is a glass-info-card with icon + label + value
-  - Scroll-triggered reveal via Framer Motion useInView
-  - Staggered animation for grid items (0.06s delay per item)
-  - Author avatar with hover glow effect
-- Created MainChallenges component (src/components/MainChallenges.tsx):
-  - Extracts challenges from post excerpt (splits by semicolons, numbered items, or sentences)
-  - Purple-themed glassmorphic card with numbered bullet items
-  - Each item animates in with staggered delay
-  - Hover effect on bullets (purple→cyan transition)
-  - Section label matching SpiderHeck "PROJECT INFO" style
-- Complete PostDetail rewrite (src/components/PostDetail.tsx):
-  - CinematicVideoHero as the full-width hero (70vh min)
-  - ProjectInfoGrid directly below hero
-  - Floating glass-action-bar (like/comment/share) with rounded pill shape
-  - MainChallenges section with excerpt-derived bullet list
-  - "The Story" section label with glass-story-card for markdown content
-  - prose-cinematic class for refined typography (1.05rem, 1.9 line-height, letter-spacing)
-  - ScrollReveal wrapper for every section (fade + slide up on scroll)
-  - Floating back button in top-left corner
-  - "Discussion" section label replacing plain "Comments"
-- Updated HomeFeed (src/components/HomeFeed.tsx):
-  - Replaced plain hero with cinematic video background (rounded-2xl container, 45vh)
-  - Multi-layer gradient overlays matching PostDetail hero
-  - Scanlines effect for cinematic feel
-  - Staggered animations for trending chip, title, subtitle, decorative line
-  - glass-chip for category tags
-- Updated Navbar (src/components/Navbar.tsx):
-  - glass-nav-cinematic class (darker, blur(25px) + saturate(1.2))
-  - Sleeker compact design (h-14, smaller logo, smaller buttons)
-  - nav-link-item class for Feed/Write with pill-shaped hover states
-  - Rss icon for Feed, PenSquare for Write
-  - Rounded-pill Premium button (h-7, text-[11px])
-  - Cinematic dropdown (glass-cinematic-dropdown with 30px blur)
-  - Avatar with ring hover effect (ring-[#00f0ff]/30)
-- Updated globals.css:
-  - Added .glass-nav-cinematic (darker bg, saturate, cyan shadow)
-  - Added .nav-link-item (pill-shaped nav buttons)
-  - Added .glass-chip (small category tags with blur)
-  - Added .glass-control (video control buttons)
-  - Added .glass-info-card (ProjectInfoGrid cells with hover glow)
-  - Added .glass-challenges-card (purple-tinted for challenges)
-  - Added .glass-story-card (subtle for article content)
-  - Added .glass-action-bar (pill-shaped action bar)
-  - Added .glass-cinematic-dropdown (heavy blur + shadow)
-  - Enhanced .glass-card (blur(20px), cubic-bezier transition, inset highlight)
-  - Added .prose-cinematic (refined typography for article content)
-- Updated page.tsx footer:
-  - glass-nav-cinematic border, smaller logo, uppercase tech labels
-- Verified build succeeds (npx next build - 0 errors)
-- Verified dev server runs and page renders HTTP 200
-- Verified API endpoints return data correctly
+- Copied user-uploaded video to /public/hero-bg.mp4
+- Updated CinematicVideoHero.tsx: uses uploaded video as default, deeper parallax, darker overlays, scanlines, neon accent line, larger title
+- Updated Navbar.tsx: 'L' logo with gradient, "Lumin" brand, SpiderHeck neon-styled controls
+- Updated HomeFeed.tsx: hero uses /hero-bg.mp4, multi-layer overlays, scanlines, noise texture, scroll-triggered card animations
+- Updated globals.css: darker background, enhanced glass effects, SpiderHeck navbar, neon glows, cyan scrollbar
+- Updated AnimatedBackground.tsx: larger orbs, cyan tech grid, diagonal accents, vignette
+- Updated page.tsx: darker bg-[#060610], 'L' branding in footer
+- Updated layout.tsx: title changed to "Lumin"
+- Updated ProjectInfoGrid.tsx and MainChallenges.tsx: consistent SpiderHeck styling
 
 Stage Summary:
-- SpiderHeck-inspired cinematic UI with video backgrounds on both Home and Post Detail
-- Full parallax scrolling on hero with Framer Motion useScroll/useTransform
-- ProjectInfoGrid with 6 metadata fields in glassmorphic cards
-- MainChallenges section extracting bullets from post excerpts
-- prose-cinematic typography for refined article reading
-- ScrollReveal animations on every section (fade + slide up)
-- Compact sleek navbar with glass-nav-cinematic
-- All new glassmorphic CSS classes for consistent cinematic aesthetic
-- Video controls (play/pause, mute) on hero section
-- Category-based video background selection
+- All components updated with SpiderHeck cinematic aesthetic
+- User video serves as hero background for HomeFeed and PostDetail
+- Build successful, dev server verified
+- Color scheme: #060610 dark, #00f0ff cyan, #a855f7 purple, #10b981 emerald
+- Brand: "Lumin" with 'L' logo

@@ -9,9 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Artisan — Glassmorphic Blog Platform",
-  description: "A modern, glassmorphic blog platform for artists and creators. Discover, create, and share content in a stunning dark interface.",
-  keywords: ["Artisan", "Blog", "Glassmorphic", "Dark Theme", "Creative Writing"],
+  title: "Lumin — Glassmorphic Blog Platform",
+  description: "A cinematic, glassmorphic blog platform for artists and creators. Discover, create, and share content in a stunning dark interface.",
+  keywords: ["Lumin", "Blog", "Glassmorphic", "Dark Theme", "Creative Writing", "Cinematic"],
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },

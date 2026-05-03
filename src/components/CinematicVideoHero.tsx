@@ -1,20 +1,21 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 
-// Category-based video backgrounds (free stock video loops)
-const CATEGORY_VIDEOS: Record<string, string> = {
-  Tech: 'https://cdn.pixabay.com/video/2020/05/25/38619-424930032_large.mp4',
-  Design: 'https://cdn.pixabay.com/video/2019/06/17/24633-342733811_large.mp4',
-  Art: 'https://cdn.pixabay.com/video/2021/02/22/65895-516251685_large.mp4',
-  Lifestyle: 'https://cdn.pixabay.com/video/2020/07/30/45309-445048954_large.mp4',
-  Science: 'https://cdn.pixabay.com/video/2020/02/11/32468-392498620_large.mp4',
-  Business: 'https://cdn.pixabay.com/video/2017/12/14/13369-247517027_large.mp4',
-};
+// Use the user-uploaded SpiderHeck video as the default
+const DEFAULT_VIDEO = '/hero-bg.mp4';
 
-const DEFAULT_VIDEO = 'https://cdn.pixabay.com/video/2024/02/23/201843-915309699_large.mp4';
+// Category-based video backgrounds — all fallback to SpiderHeck video
+const CATEGORY_VIDEOS: Record<string, string> = {
+  Tech: DEFAULT_VIDEO,
+  Design: DEFAULT_VIDEO,
+  Art: DEFAULT_VIDEO,
+  Lifestyle: DEFAULT_VIDEO,
+  Science: DEFAULT_VIDEO,
+  Business: DEFAULT_VIDEO,
+};
 
 interface CinematicVideoHeroProps {
   title: string;
@@ -42,11 +43,11 @@ export default function CinematicVideoHero({
     offset: ['start start', 'end start'],
   });
 
-  // Parallax transforms
-  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
-  const videoOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.3]);
-  const textY = useTransform(scrollYProgress, [0, 0.5], [0, 80]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+  // Parallax transforms — SpiderHeck feel: deeper parallax
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.3]);
+  const videoOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0.15]);
+  const textY = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.35], [1, 0]);
 
   const selectedVideo = videoSrc || CATEGORY_VIDEOS[category] || DEFAULT_VIDEO;
 
@@ -72,7 +73,7 @@ export default function CinematicVideoHero({
     <motion.div
       ref={containerRef}
       className="relative w-full overflow-hidden"
-      style={{ minHeight: '70vh' }}
+      style={{ minHeight: '80vh' }}
     >
       {/* Video Background Layer */}
       <motion.div
@@ -102,62 +103,75 @@ export default function CinematicVideoHero({
           />
         )}
 
-        {/* Multi-layer gradient overlays for cinematic depth */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a14] via-[#0a0a14]/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a14]/80 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a14]/50 via-transparent to-[#0a0a14]/50" />
-        <div className="absolute inset-0 bg-[#0a0a14]/30" />
+        {/* SpiderHeck-style multi-layer gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060610] via-[#060610]/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#060610]/90 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#060610]/60 via-transparent to-[#060610]/60" />
+        <div className="absolute inset-0 bg-[#060610]/40" />
 
-        {/* Animated scanlines for cinematic feel */}
+        {/* Animated scanlines for cinematic SpiderHeck feel */}
         <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          className="absolute inset-0 pointer-events-none"
           style={{
             backgroundImage:
-              'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px)',
+              'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px)',
+            opacity: 0.5,
+          }}
+        />
+
+        {/* Subtle noise texture */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.015]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           }}
         />
       </motion.div>
 
-      {/* Video Controls */}
-      <div className="absolute bottom-6 right-6 z-20 flex items-center gap-2">
+      {/* Video Controls — SpiderHeck styled */}
+      <div className="absolute bottom-8 right-8 z-20 flex items-center gap-2">
         <button
           onClick={toggleMute}
-          className="w-8 h-8 rounded-full glass-control flex items-center justify-center text-white/50 hover:text-white/80 transition-colors"
+          className="w-9 h-9 rounded-full glass-control flex items-center justify-center text-[#00f0ff]/60 hover:text-[#00f0ff] transition-colors"
         >
-          {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+          {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
         </button>
         <button
           onClick={togglePlay}
-          className="w-8 h-8 rounded-full glass-control flex items-center justify-center text-white/50 hover:text-white/80 transition-colors"
+          className="w-9 h-9 rounded-full glass-control flex items-center justify-center text-[#00f0ff]/60 hover:text-[#00f0ff] transition-colors"
         >
-          {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+          {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
         </button>
       </div>
 
+      {/* SpiderHeck-style glowing accent line at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 h-px bg-gradient-to-r from-transparent via-[#00f0ff]/30 to-transparent" />
+
       {/* Hero Content Overlay */}
       <motion.div
-        className="relative z-10 flex flex-col justify-end h-full min-h-[70vh] px-6 sm:px-10 lg:px-16 pb-16 pt-32"
+        className="relative z-10 flex flex-col justify-end h-full min-h-[80vh] px-6 sm:px-10 lg:px-16 pb-20 pt-40"
         style={{ y: textY, opacity: textOpacity }}
       >
-        {/* Category tag */}
+        {/* Category tag — SpiderHeck neon chip */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-4"
+          className="mb-5"
         >
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em] glass-chip">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00f0ff] mr-2 animate-pulse" />
+          <span className="inline-flex items-center px-3.5 py-1.5 rounded-md text-xs font-bold uppercase tracking-[0.25em] bg-[#00f0ff]/8 border border-[#00f0ff]/20 text-[#00f0ff]/80">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00f0ff] mr-2.5 animate-pulse shadow-[0_0_6px_#00f0ff]" />
             {category}
           </span>
         </motion.div>
 
-        {/* Title with staggered letter reveal */}
+        {/* Title — bold cinematic SpiderHeck type */}
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.05] tracking-tight max-w-4xl"
+          transition={{ duration: 1, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white leading-[0.95] tracking-tight max-w-5xl"
+          style={{ textShadow: '0 0 60px rgba(0,240,255,0.15)' }}
         >
           {title}
         </motion.h1>
@@ -167,19 +181,20 @@ export default function CinematicVideoHero({
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-            className="mt-4 text-lg sm:text-xl text-white/50 max-w-2xl leading-relaxed font-light"
+            transition={{ duration: 0.7, delay: 0.6 }}
+            className="mt-5 text-lg sm:text-xl text-white/40 max-w-2xl leading-relaxed font-light"
           >
             {subtitle}
           </motion.p>
         )}
 
-        {/* Decorative line */}
+        {/* Decorative line — SpiderHeck neon accent */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
-          transition={{ duration: 1, delay: 0.7, ease: 'easeOut' }}
-          className="mt-6 h-px w-32 origin-left bg-gradient-to-r from-[#00f0ff] via-[#a855f7] to-transparent"
+          transition={{ duration: 1.2, delay: 0.8, ease: 'easeOut' }}
+          className="mt-8 h-[2px] w-40 origin-left bg-gradient-to-r from-[#00f0ff] via-[#a855f7] to-transparent"
+          style={{ boxShadow: '0 0 8px rgba(0,240,255,0.4)' }}
         />
       </motion.div>
     </motion.div>

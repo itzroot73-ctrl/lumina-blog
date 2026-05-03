@@ -66,13 +66,12 @@ export default function Home() {
   };
 
   const handleCookieDismiss = () => {
-    // Dismiss the banner without consenting (ads won't load)
     setCookieConsent(false);
   };
 
   return (
     <AdSenseProvider cookieConsent={cookieConsent}>
-      <div className="min-h-screen bg-[#0a0a14] relative">
+      <div className="min-h-screen bg-[#060610] relative">
         <AnimatedBackground />
         <div className="relative z-10 flex flex-col min-h-screen">
           <Navbar />
@@ -90,17 +89,17 @@ export default function Home() {
             </AnimatePresence>
           </main>
 
-          {/* Footer */}
+          {/* Footer — SpiderHeck styled */}
           <footer className="glass-nav-cinematic border-t border-white/[0.03] mt-auto">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <div className="w-5 h-5 rounded bg-gradient-to-br from-[#00f0ff] to-[#a855f7] flex items-center justify-center text-white font-black text-[9px]">
-                    A
+                    L
                   </div>
-                  <span className="text-xs text-white/30 font-medium">Artisan Blog Platform</span>
+                  <span className="text-xs text-white/25 font-medium">Lumin Blog Platform</span>
                 </div>
-                <p className="text-[10px] text-white/15 tracking-wider uppercase">
+                <p className="text-[10px] text-white/10 tracking-wider uppercase">
                   Next.js / Tailwind / Framer Motion
                 </p>
               </div>
