@@ -9,6 +9,9 @@ import { Input } from '@/components/ui/input';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GoogleAdInFeed, GoogleAdSidebar } from './ads';
 
+// Cinematic hero video for the home feed
+const HERO_VIDEO_URL = 'https://cdn.pixabay.com/video/2024/02/23/201843-915309699_large.mp4';
+
 function CategoryBadge({ category }: { category: string }) {
   const colors = CATEGORY_COLORS[category] || CATEGORY_COLORS.Tech;
   return (
@@ -209,29 +212,75 @@ export default function HomeFeed() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Hero Section */}
+      {/* Cinematic Hero Section with Video Background */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-12 pt-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="relative w-full overflow-hidden rounded-2xl mb-12"
+        style={{ minHeight: '45vh' }}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00f0ff]/5 border border-[#00f0ff]/10 mb-4"
+        {/* Video Background */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          poster="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80"
         >
-          <TrendingUp className="w-3.5 h-3.5 text-[#00f0ff]" />
-          <span className="text-xs text-[#00f0ff]/70 font-medium">Trending articles from top creators</span>
-        </motion.div>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 tracking-tight">
-          <span className="gradient-text">Discover Stories</span>
-        </h1>
-        <p className="text-lg text-white/45 max-w-2xl mx-auto leading-relaxed">
-          Where artists share their craft. Explore insights on design, development,
-          and creative technology.
-        </p>
+          <source src={HERO_VIDEO_URL} type="video/mp4" />
+        </video>
+
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a14] via-[#0a0a14]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a14]/60 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-[#0a0a14]/20" />
+
+        {/* Scanlines */}
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px)',
+          }}
+        />
+
+        {/* Hero Content */}
+        <div className="relative z-10 flex flex-col justify-end h-full min-h-[45vh] px-6 sm:px-10 lg:px-16 pb-10 pt-20">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-chip w-fit mb-4"
+          >
+            <TrendingUp className="w-3.5 h-3.5 text-[#00f0ff]" />
+            <span className="text-xs text-[#00f0ff]/70 font-medium">Trending articles from top creators</span>
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="text-4xl sm:text-5xl md:text-6xl font-black mb-3 tracking-tight"
+          >
+            <span className="gradient-text">Discover Stories</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="text-base sm:text-lg text-white/45 max-w-xl leading-relaxed"
+          >
+            Where artists share their craft. Explore insights on design, development,
+            and creative technology.
+          </motion.p>
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 0.7, duration: 0.8, ease: 'easeOut' }}
+            className="mt-5 h-px w-24 origin-left bg-gradient-to-r from-[#00f0ff] via-[#a855f7] to-transparent"
+          />
+        </div>
       </motion.div>
 
       {/* Search Bar */}

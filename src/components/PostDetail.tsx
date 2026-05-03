@@ -1,19 +1,20 @@
 'use client';
 
 import { useAppStore, type Comment as CommentType } from '@/lib/store';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ReactMarkdown from 'react-markdown';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { GoogleAdInArticle } from './ads';
+import CinematicVideoHero from './CinematicVideoHero';
+import ProjectInfoGrid from './ProjectInfoGrid';
+import MainChallenges from './MainChallenges';
 import {
   Heart,
   MessageCircle,
-  Clock,
   Eye,
   Share2,
   ArrowLeft,
@@ -54,6 +55,24 @@ function CommentCard({ comment }: { comment: CommentType }) {
   );
 }
 
+// Scroll-triggered section wrapper
+function ScrollReveal({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export default function PostDetail() {
   const {
     currentPost,
@@ -79,16 +98,10 @@ export default function PostDetail() {
   // Split content into paragraph blocks and insert in-article ad after 3rd paragraph
   const contentWithAd = useMemo(() => {
     if (!currentPost?.content || isPremium) return currentPost?.content || '';
-
-    // Split by double newline (paragraph boundary in markdown)
     const paragraphs = currentPost.content.split(/\n\n+/);
-
     if (paragraphs.length <= 3) return currentPost.content;
-
-    // Insert ad marker after 3rd paragraph
     const beforeAd = paragraphs.slice(0, 3).join('\n\n');
     const afterAd = paragraphs.slice(3).join('\n\n');
-
     return `${beforeAd}\n\n<!--AD_INSERT-->\n\n${afterAd}`;
   }, [currentPost?.content, isPremium]);
 
@@ -155,179 +168,155 @@ export default function PostDetail() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Back Button */}
-      <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
+    <div className="w-full">
+      {/* Back Button — floating above hero */}
+      <motion.div
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="fixed top-20 left-4 sm:left-8 z-40"
+      >
         <button
           onClick={() => navigate('home')}
-          className="flex items-center gap-2 text-white/40 hover:text-white/70 transition-colors mb-6 group"
+          className="flex items-center gap-2 glass-control px-3 py-2 rounded-full text-white/50 hover:text-white/80 transition-all group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-sm">Back to feed</span>
+          <span className="text-xs font-medium hidden sm:inline">Feed</span>
         </button>
       </motion.div>
 
-      {/* Article Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {/* Thumbnail */}
-        {currentPost.thumbnail && (
-          <div className="relative h-64 sm:h-80 rounded-2xl overflow-hidden mb-8">
-            <img
-              src={currentPost.thumbnail}
-              alt={currentPost.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      {/* ====== CINEMATIC HERO SECTION ====== */}
+      <CinematicVideoHero
+        title={currentPost.title}
+        subtitle={currentPost.excerpt || undefined}
+        category={currentPost.category}
+        thumbnail={currentPost.thumbnail || undefined}
+      />
+
+      {/* ====== PROJECT INFO GRID ====== */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
+        <ProjectInfoGrid
+          authorName={currentPost.author.name}
+          authorUsername={currentPost.author.username}
+          authorAvatar={currentPost.author.avatar || undefined}
+          publishDate={currentPost.createdAt}
+          readingTime={currentPost.readingTime}
+          category={currentPost.category}
+          views={currentPost.views}
+          likesCount={currentPost._count?.likes || 0}
+          commentsCount={currentPost._count?.comments || 0}
+          onAuthorClick={() => navigate('profile', { username: currentPost.author.username })}
+        />
+      </div>
+
+      {/* ====== ACTION BAR (floating) ====== */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        <ScrollReveal>
+          <div className="flex items-center gap-3 glass-action-bar px-4 py-2.5 rounded-full w-fit">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLike}
+              className={`group transition-all rounded-full px-3 ${
+                userLikedCurrentPost
+                  ? 'text-red-400 hover:text-red-300'
+                  : 'text-white/40 hover:text-red-400'
+              }`}
+            >
+              <Heart
+                className={`w-4 h-4 mr-1 transition-transform ${
+                  likeAnimating ? 'animate-heart-pulse' : ''
+                } ${userLikedCurrentPost ? 'fill-current' : ''}`}
+              />
+              <span className="text-xs">{currentPost._count?.likes || 0}</span>
+            </Button>
+
+            <div className="w-px h-4 bg-white/10" />
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="text-white/40 hover:text-[#00f0ff] rounded-full px-3"
+            >
+              <MessageCircle className="w-4 h-4 mr-1" />
+              <span className="text-xs">{currentPost._count?.comments || 0}</span>
+            </Button>
+
+            <div className="w-px h-4 bg-white/10" />
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleShare}
+              className="text-white/40 hover:text-[#10b981] rounded-full px-3"
+            >
+              {shared ? (
+                <Check className="w-4 h-4 mr-1 text-[#10b981]" />
+              ) : (
+                <Share2 className="w-4 h-4 mr-1" />
+              )}
+              <span className="text-xs">{shared ? 'Copied!' : 'Share'}</span>
+            </Button>
           </div>
-        )}
+        </ScrollReveal>
+      </div>
 
-        {/* Title */}
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
-          {currentPost.title}
-        </h1>
+      {/* ====== MAIN CHALLENGES SECTION ====== */}
+      {currentPost.excerpt && (
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+          <MainChallenges excerpt={currentPost.excerpt} />
+        </div>
+      )}
 
-        {/* Meta */}
-        <div className="flex flex-wrap items-center gap-4 mb-8">
-          {/* Author */}
-          <button
-            onClick={() => navigate('profile', { username: currentPost.author.username })}
-            className="flex items-center gap-2 group"
-          >
-            <Avatar className="h-9 w-9 border border-white/10">
-              <AvatarImage src={currentPost.author.avatar || undefined} alt={currentPost.author.name} />
-              <AvatarFallback className="bg-gradient-to-br from-[#00f0ff]/20 to-[#a855f7]/20 text-white text-xs">
-                {currentPost.author.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="text-left">
-              <p className="text-sm font-medium text-white/80 group-hover:text-[#00f0ff] transition-colors">
-                {currentPost.author.name}
-              </p>
-              <p className="text-xs text-white/30">@{currentPost.author.username}</p>
+      {/* ====== STORY CONTENT ====== */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        <ScrollReveal>
+          {/* Section label */}
+          <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-white/30 flex items-center gap-2 mb-5">
+            <span className="w-6 h-px bg-[#10b981]/40" />
+            The Story
+          </h3>
+
+          <div className="glass-story-card p-6 sm:p-10 lg:p-14">
+            <div className="prose-cinematic max-w-none">
+              {contentWithAd.split('<!--AD_INSERT-->').map((part, i) => (
+                <div key={i}>
+                  <ReactMarkdown>{part}</ReactMarkdown>
+                  {i === 0 && contentWithAd.includes('<!--AD_INSERT-->') && (
+                    <GoogleAdInArticle />
+                  )}
+                </div>
+              ))}
             </div>
-          </button>
-
-          <div className="h-6 w-px bg-white/10" />
-
-          {/* Reading Time */}
-          <Badge variant="secondary" className="bg-white/5 text-white/50 border-white/10 text-xs">
-            <Clock className="w-3 h-3 mr-1" />
-            {currentPost.readingTime} min read
-          </Badge>
-
-          {/* Views */}
-          <span className="flex items-center gap-1 text-xs text-white/40">
-            <Eye className="w-3.5 h-3.5" />
-            {currentPost.views} views
-          </span>
-
-          {/* Date */}
-          <span className="text-xs text-white/30">
-            {new Date(currentPost.createdAt).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </span>
-        </div>
-
-        {/* Action Bar */}
-        <div className="flex items-center gap-3 mb-8">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLike}
-            className={`group transition-all ${
-              userLikedCurrentPost
-                ? 'text-red-400 hover:text-red-300'
-                : 'text-white/40 hover:text-red-400'
-            }`}
-          >
-            <Heart
-              className={`w-5 h-5 mr-1.5 transition-transform ${
-                likeAnimating ? 'animate-heart-pulse' : ''
-              } ${userLikedCurrentPost ? 'fill-current' : ''}`}
-            />
-            <span className="text-sm">
-              {currentPost._count?.likes || 0}
-            </span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="text-white/40 hover:text-[#00f0ff]"
-          >
-            <MessageCircle className="w-5 h-5 mr-1.5" />
-            <span className="text-sm">{currentPost._count?.comments || 0}</span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleShare}
-            className="text-white/40 hover:text-[#10b981]"
-          >
-            {shared ? (
-              <Check className="w-5 h-5 mr-1.5 text-[#10b981]" />
-            ) : (
-              <Share2 className="w-5 h-5 mr-1.5" />
-            )}
-            <span className="text-sm">{shared ? 'Copied!' : 'Share'}</span>
-          </Button>
-        </div>
-
-        {/* Excerpt */}
-        {currentPost.excerpt && (
-          <p className="text-lg text-white/50 italic mb-8 leading-relaxed">
-            {currentPost.excerpt}
-          </p>
-        )}
-
-        {/* Article Content with In-Article Ad after 3rd paragraph */}
-        <div className="glass-card p-6 sm:p-8 mb-12">
-          <div className="prose-dark max-w-none">
-            {contentWithAd.split('<!--AD_INSERT-->').map((part, i) => (
-              <div key={i}>
-                <ReactMarkdown>{part}</ReactMarkdown>
-                {/* Insert Google In-Article Ad after the 3rd paragraph (only for non-premium) */}
-                {i === 0 && contentWithAd.includes('<!--AD_INSERT-->') && (
-                  <GoogleAdInArticle />
-                )}
-              </div>
-            ))}
           </div>
-        </div>
+        </ScrollReveal>
+      </div>
 
-        {/* Comments Section */}
-        <div id="comments-section">
-          <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <MessageCircle className="w-5 h-5 text-[#a855f7]" />
-            Comments
-            <span className="text-sm font-normal text-white/30">
+      {/* ====== COMMENTS SECTION ====== */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-12" id="comments-section">
+        <ScrollReveal>
+          <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-white/30 flex items-center gap-2 mb-6">
+            <span className="w-6 h-px bg-[#a855f7]/40" />
+            Discussion
+            <span className="text-white/15 font-normal normal-case tracking-normal ml-1">
               ({currentPostComments.length})
             </span>
           </h3>
 
           {/* Comment Input */}
           {isAuthenticated ? (
-            <form onSubmit={handleComment} className="mb-6">
+            <form onSubmit={handleComment} className="mb-8">
               <div className="flex gap-3">
                 <Input
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="Write a comment..."
-                  className="glass-input flex-1 text-white placeholder:text-white/25"
+                  placeholder="Share your thoughts..."
+                  className="glass-input flex-1 text-white placeholder:text-white/25 h-11 rounded-xl"
                 />
                 <Button
                   type="submit"
                   disabled={submittingComment || !commentText.trim()}
-                  className="bg-gradient-to-r from-[#a855f7] to-[#10b981] hover:opacity-90 text-white border-0 shrink-0"
+                  className="bg-gradient-to-r from-[#a855f7] to-[#10b981] hover:opacity-90 text-white border-0 shrink-0 rounded-xl h-11 w-11 p-0 flex items-center justify-center"
                 >
                   {submittingComment ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -338,7 +327,7 @@ export default function PostDetail() {
               </div>
             </form>
           ) : (
-            <div className="glass-card p-4 mb-6 text-center">
+            <div className="glass-card p-4 mb-8 text-center rounded-xl">
               <p className="text-white/40 text-sm">
                 <button
                   onClick={() => navigate('login')}
@@ -346,7 +335,7 @@ export default function PostDetail() {
                 >
                   Sign in
                 </button>{' '}
-                to leave a comment
+                to join the conversation
               </p>
             </div>
           )}
@@ -360,14 +349,14 @@ export default function PostDetail() {
             </AnimatePresence>
 
             {currentPostComments.length === 0 && (
-              <div className="text-center py-8">
-                <MessageCircle className="w-8 h-8 text-white/10 mx-auto mb-2" />
-                <p className="text-white/30 text-sm">No comments yet. Be the first!</p>
+              <div className="text-center py-12">
+                <MessageCircle className="w-10 h-10 text-white/10 mx-auto mb-3" />
+                <p className="text-white/30 text-sm">No comments yet. Start the conversation.</p>
               </div>
             )}
           </div>
-        </div>
-      </motion.div>
+        </ScrollReveal>
+      </div>
     </div>
   );
 }

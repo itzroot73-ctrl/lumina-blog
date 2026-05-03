@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { PenSquare, User, LogOut, Home, Crown } from 'lucide-react';
+import { PenSquare, User, LogOut, Home, Crown, Rss } from 'lucide-react';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout, navigate, setShowPremiumModal } = useAppStore();
@@ -18,44 +18,41 @@ export default function Navbar() {
   const isPremium = user?.isPremium ?? false;
 
   return (
-    <nav className="glass-nav sticky top-0 z-50">
+    <nav className="glass-nav-cinematic sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <button
             onClick={() => navigate('home')}
-            className="flex items-center gap-2 group cursor-pointer"
+            className="flex items-center gap-2.5 group cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00f0ff] to-[#a855f7] flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-7 h-7 rounded-md bg-gradient-to-br from-[#00f0ff] to-[#a855f7] flex items-center justify-center text-white font-black text-xs shadow-lg shadow-[#00f0ff]/10">
               A
             </div>
-            <span className="text-xl font-bold text-glow-cyan neon-cyan tracking-tight">
+            <span className="text-lg font-black text-glow-cyan neon-cyan tracking-tight">
               Artisan
             </span>
           </button>
 
           {/* Navigation */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex items-center gap-1">
+            {/* Feed nav item */}
+            <button
               onClick={() => navigate('home')}
-              className="text-white/70 hover:text-white hover:bg-white/5"
+              className="nav-link-item group"
             >
-              <Home className="w-4 h-4 mr-1" />
-              <span className="hidden sm:inline">Home</span>
-            </Button>
+              <Rss className="w-3.5 h-3.5 text-white/40 group-hover:text-[#00f0ff] transition-colors" />
+              <span className="hidden sm:inline text-white/50 group-hover:text-white/80 transition-colors">Feed</span>
+            </button>
 
             {isAuthenticated && user?.role === 'artist' && (
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={() => navigate('dashboard')}
-                className="text-white/70 hover:text-white hover:bg-white/5"
+                className="nav-link-item group"
               >
-                <PenSquare className="w-4 h-4 mr-1" />
-                <span className="hidden sm:inline">Dashboard</span>
-              </Button>
+                <PenSquare className="w-3.5 h-3.5 text-white/40 group-hover:text-[#a855f7] transition-colors" />
+                <span className="hidden sm:inline text-white/50 group-hover:text-white/80 transition-colors">Write</span>
+              </button>
             )}
 
             {/* Go Premium Button — only show if not premium */}
@@ -63,55 +60,52 @@ export default function Navbar() {
               <Button
                 size="sm"
                 onClick={() => setShowPremiumModal(true)}
-                className="relative bg-gradient-to-r from-[#f59e0b] to-[#f43f5e] hover:opacity-90 text-white border-0 font-semibold animate-pulse-glow overflow-hidden"
+                className="relative bg-gradient-to-r from-[#f59e0b] to-[#f43f5e] hover:opacity-90 text-white border-0 font-bold animate-pulse-glow h-7 text-[11px] px-3 rounded-full overflow-hidden"
               >
-                <Crown className="w-4 h-4 mr-1.5" />
-                <span className="hidden sm:inline">Go Premium</span>
+                <Crown className="w-3 h-3 mr-1" />
+                <span className="hidden sm:inline">Premium</span>
               </Button>
             )}
 
-            {/* Premium badge if user is premium */}
+            {/* Premium badge */}
             {isPremium && (
-              <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-[#f59e0b]/15 to-[#f43f5e]/15 border border-[#f59e0b]/20">
-                <Crown className="w-3.5 h-3.5 text-[#f59e0b]" />
-                <span className="text-xs font-semibold text-[#f59e0b] hidden sm:inline">Premium</span>
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-[#f59e0b]/10 to-[#f43f5e]/10 border border-[#f59e0b]/15">
+                <Crown className="w-3 h-3 text-[#f59e0b]" />
+                <span className="text-[10px] font-bold text-[#f59e0b] hidden sm:inline">PRO</span>
               </div>
             )}
 
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="relative h-9 w-9 rounded-full"
-                  >
-                    <Avatar className="h-8 w-8 border border-white/10">
+                  <button className="relative h-8 w-8 rounded-full ml-1 ring-1 ring-white/10 hover:ring-[#00f0ff]/30 transition-all">
+                    <Avatar className="h-8 w-8">
                       <AvatarImage
                         src={user?.avatar || undefined}
                         alt={user?.name || 'User'}
                       />
-                      <AvatarFallback className="bg-gradient-to-br from-[#00f0ff]/20 to-[#a855f7]/20 text-white text-xs">
+                      <AvatarFallback className="bg-gradient-to-br from-[#00f0ff]/20 to-[#a855f7]/20 text-white text-xs font-bold">
                         {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
-                  </Button>
+                  </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="glass w-56"
+                  className="glass-cinematic-dropdown w-52"
                   align="end"
                 >
-                  <div className="px-2 py-1.5">
-                    <p className="text-sm font-medium text-white">{user?.name}</p>
-                    <p className="text-xs text-white/50">@{user?.username}</p>
+                  <div className="px-3 py-2">
+                    <p className="text-sm font-semibold text-white">{user?.name}</p>
+                    <p className="text-xs text-white/40">@{user?.username}</p>
                     {isPremium && (
-                      <span className="inline-flex items-center gap-1 mt-1 text-[10px] text-[#f59e0b] font-semibold">
-                        <Crown className="w-3 h-3" /> Premium Member
+                      <span className="inline-flex items-center gap-1 mt-1 text-[10px] text-[#f59e0b] font-bold">
+                        <Crown className="w-3 h-3" /> Premium
                       </span>
                     )}
                   </div>
-                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuSeparator className="bg-white/5" />
                   <DropdownMenuItem
-                    className="text-white/70 focus:text-white focus:bg-white/5 cursor-pointer"
+                    className="text-white/60 focus:text-white focus:bg-white/5 cursor-pointer text-sm"
                     onClick={() => navigate('profile', { username: user?.username || '' })}
                   >
                     <User className="mr-2 h-4 w-4" />
@@ -119,7 +113,7 @@ export default function Navbar() {
                   </DropdownMenuItem>
                   {user?.role === 'artist' && (
                     <DropdownMenuItem
-                      className="text-white/70 focus:text-white focus:bg-white/5 cursor-pointer"
+                      className="text-white/60 focus:text-white focus:bg-white/5 cursor-pointer text-sm"
                       onClick={() => navigate('dashboard')}
                     >
                       <PenSquare className="mr-2 h-4 w-4" />
@@ -128,16 +122,16 @@ export default function Navbar() {
                   )}
                   {!isPremium && (
                     <DropdownMenuItem
-                      className="text-[#f59e0b] focus:text-[#f59e0b] focus:bg-white/5 cursor-pointer"
+                      className="text-[#f59e0b] focus:text-[#f59e0b] focus:bg-white/5 cursor-pointer text-sm"
                       onClick={() => setShowPremiumModal(true)}
                     >
                       <Crown className="mr-2 h-4 w-4" />
                       Go Premium
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuSeparator className="bg-white/5" />
                   <DropdownMenuItem
-                    className="text-red-400 focus:text-red-300 focus:bg-white/5 cursor-pointer"
+                    className="text-red-400/70 focus:text-red-300 focus:bg-white/5 cursor-pointer text-sm"
                     onClick={logout}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
@@ -146,19 +140,19 @@ export default function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 ml-1">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate('login')}
-                  className="text-white/70 hover:text-white hover:bg-white/5"
+                  className="text-white/50 hover:text-white/80 hover:bg-white/5 h-7 text-xs px-3 rounded-full"
                 >
                   Sign in
                 </Button>
                 <Button
                   size="sm"
                   onClick={() => navigate('register')}
-                  className="bg-gradient-to-r from-[#00f0ff] to-[#a855f7] hover:opacity-90 text-white border-0"
+                  className="bg-gradient-to-r from-[#00f0ff] to-[#a855f7] hover:opacity-90 text-white border-0 h-7 text-xs px-3 rounded-full font-semibold"
                 >
                   Sign up
                 </Button>
