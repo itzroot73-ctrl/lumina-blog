@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ReactMarkdown from 'react-markdown';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
+import { GoogleAdInArticle } from './ads';
 import {
   Heart,
   MessageCircle,
@@ -59,6 +60,7 @@ export default function PostDetail() {
     currentPostComments,
     userLikedCurrentPost,
     isAuthenticated,
+    user,
     navigate,
     loadPost,
     loadComments,
@@ -67,10 +69,28 @@ export default function PostDetail() {
     viewParams,
   } = useAppStore();
 
+  const isPremium = user?.isPremium ?? false;
+
   const [commentText, setCommentText] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
   const [likeAnimating, setLikeAnimating] = useState(false);
   const [shared, setShared] = useState(false);
+
+  // Split content into paragraph blocks and insert in-article ad after 3rd paragraph
+  const contentWithAd = useMemo(() => {
+    if (!currentPost?.content || isPremium) return currentPost?.content || '';
+
+    // Split by double newline (paragraph boundary in markdown)
+    const paragraphs = currentPost.content.split(/\n\n+/);
+
+    if (paragraphs.length <= 3) return currentPost.content;
+
+    // Insert ad marker after 3rd paragraph
+    const beforeAd = paragraphs.slice(0, 3).join('\n\n');
+    const afterAd = paragraphs.slice(3).join('\n\n');
+
+    return `${beforeAd}\n\n<!--AD_INSERT-->\n\n${afterAd}`;
+  }, [currentPost?.content, isPremium]);
 
   useEffect(() => {
     if (viewParams.id) {
@@ -269,10 +289,18 @@ export default function PostDetail() {
           </p>
         )}
 
-        {/* Article Content */}
+        {/* Article Content with In-Article Ad after 3rd paragraph */}
         <div className="glass-card p-6 sm:p-8 mb-12">
           <div className="prose-dark max-w-none">
-            <ReactMarkdown>{currentPost.content}</ReactMarkdown>
+            {contentWithAd.split('<!--AD_INSERT-->').map((part, i) => (
+              <div key={i}>
+                <ReactMarkdown>{part}</ReactMarkdown>
+                {/* Insert Google In-Article Ad after the 3rd paragraph (only for non-premium) */}
+                {i === 0 && contentWithAd.includes('<!--AD_INSERT-->') && (
+                  <GoogleAdInArticle />
+                )}
+              </div>
+            ))}
           </div>
         </div>
 

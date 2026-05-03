@@ -120,6 +120,10 @@ interface AppState {
   setShowPremiumModal: (v: boolean) => void;
   activatePremium: () => Promise<void>;
 
+  // Cookie Consent
+  cookieConsent: boolean;
+  setCookieConsent: (v: boolean) => void;
+
   // Seeded flag
   seeded: boolean;
   setSeeded: (v: boolean) => void;
@@ -162,6 +166,11 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   checkAuth: async () => {
     const token = localStorage.getItem('token');
+    // Also restore cookie consent from localStorage
+    const savedConsent = localStorage.getItem('cookieConsent');
+    if (savedConsent === 'true') {
+      set({ cookieConsent: true });
+    }
     if (!token) {
       set({ isLoadingAuth: false });
       return;
@@ -395,6 +404,15 @@ export const useAppStore = create<AppState>((set, get) => ({
     } catch {
       // ignore
     }
+  },
+
+  // Cookie Consent
+  cookieConsent: false,
+  setCookieConsent: (v) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('cookieConsent', String(v));
+    }
+    set({ cookieConsent: v });
   },
 
   // Seeded

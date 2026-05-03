@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Heart, MessageCircle, Clock, Eye, Search, Sparkles, TrendingUp } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import AdSlot from './AdSlot';
+import { GoogleAdInFeed, GoogleAdSidebar } from './ads';
 
 function CategoryBadge({ category }: { category: string }) {
   const colors = CATEGORY_COLORS[category] || CATEGORY_COLORS.Tech;
@@ -190,17 +190,17 @@ export default function HomeFeed() {
 
   const isPremium = user?.isPremium ?? false;
 
-  // Insert ad slots between every 4-5 posts
+  // Insert Google In-Feed ad slots between every 4-5 posts
   const renderPostsWithAds = () => {
     const elements: React.ReactNode[] = [];
     posts.forEach((post, index) => {
       elements.push(
         <PostCard key={post.id} post={post} index={index} />
       );
-      // Insert ad after every 4th post (but not after the last one)
+      // Insert Google In-Feed ad after every 4th post (but not after the last one)
       if (!isPremium && (index + 1) % 4 === 0 && index < posts.length - 1) {
         elements.push(
-          <AdSlot key={`ad-${index}`} variant="card" index={Math.floor(index / 4)} />
+          <GoogleAdInFeed key={`ad-infeed-${index}`} index={Math.floor(index / 4)} />
         );
       }
     });
@@ -371,8 +371,8 @@ export default function HomeFeed() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="hidden xl:block w-72 shrink-0 space-y-6"
           >
-            {/* Sidebar Ad */}
-            <AdSlot variant="sidebar" index={0} />
+            {/* Google Sidebar Display Ad */}
+            <GoogleAdSidebar />
 
             {/* Trending Topics */}
             <div className="glass-card p-5">
@@ -401,8 +401,8 @@ export default function HomeFeed() {
               </div>
             </div>
 
-            {/* Sidebar Ad 2 */}
-            <AdSlot variant="sidebar" index={1} />
+            {/* Second Sidebar Ad */}
+            <GoogleAdSidebar className="mt-6" />
           </motion.aside>
         )}
       </div>

@@ -1,0 +1,9 @@
+# ads.txt file for Google AdSense
+# Replace with your actual publisher ID and seller information
+# Format: <FIELD1>, <FIELD2>, <FIELD3>, <FIELD4>
+# FIELD1: Domain name of the advertising system
+# FIELD2: Publisher's Account ID
+# FIELD3: Type of Account/Relationship (DIRECT or RESELLER)
+# FIELD4: Certification Authority ID (optional)
+
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

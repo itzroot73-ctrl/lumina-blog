@@ -12,6 +12,8 @@ import Dashboard from '@/components/Dashboard';
 import PostDetail from '@/components/PostDetail';
 import ArtistProfile from '@/components/ArtistProfile';
 import PremiumCheckout from '@/components/PremiumCheckout';
+import { AdSenseProvider } from '@/components/ads';
+import CookieConsentBanner from '@/components/CookieConsentBanner';
 
 function ViewRenderer({ view }: { view: string }) {
   switch (view) {
@@ -33,7 +35,7 @@ function ViewRenderer({ view }: { view: string }) {
 }
 
 export default function Home() {
-  const { currentView, checkAuth, seeded, setSeeded } = useAppStore();
+  const { currentView, checkAuth, seeded, setSeeded, cookieConsent, setCookieConsent } = useAppStore();
 
   useEffect(() => {
     checkAuth();
@@ -55,45 +57,68 @@ export default function Home() {
     }
   }, [seeded, setSeeded]);
 
+  const handleCookieAccept = () => {
+    setCookieConsent(true);
+  };
+
+  const handleCookieDecline = () => {
+    setCookieConsent(false);
+  };
+
+  const handleCookieDismiss = () => {
+    // Dismiss the banner without consenting (ads won't load)
+    setCookieConsent(false);
+  };
+
   return (
-    <div className="min-h-screen bg-[#0a0a14] relative">
-      <AnimatedBackground />
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-1">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentView}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.3 }}
-            >
-              <ViewRenderer view={currentView} />
-            </motion.div>
-          </AnimatePresence>
-        </main>
+    <AdSenseProvider cookieConsent={cookieConsent}>
+      <div className="min-h-screen bg-[#0a0a14] relative">
+        <AnimatedBackground />
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-1">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentView}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ViewRenderer view={currentView} />
+              </motion.div>
+            </AnimatePresence>
+          </main>
 
-        {/* Footer */}
-        <footer className="glass-nav border-t border-white/5 mt-auto">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#00f0ff] to-[#a855f7] flex items-center justify-center text-white font-bold text-xs">
-                  A
+          {/* Footer */}
+          <footer className="glass-nav border-t border-white/5 mt-auto">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#00f0ff] to-[#a855f7] flex items-center justify-center text-white font-bold text-xs">
+                    A
+                  </div>
+                  <span className="text-sm text-white/40">Artisan Blog Platform</span>
                 </div>
-                <span className="text-sm text-white/40">Artisan Blog Platform</span>
+                <p className="text-xs text-white/20">
+                  Built with Next.js, Tailwind CSS & Framer Motion
+                </p>
               </div>
-              <p className="text-xs text-white/20">
-                Built with Next.js, Tailwind CSS & Framer Motion
-              </p>
             </div>
-          </div>
-        </footer>
-      </div>
+          </footer>
+        </div>
 
-      {/* Premium Checkout Modal */}
-      <PremiumCheckout />
-    </div>
+        {/* Premium Checkout Modal */}
+        <PremiumCheckout />
+
+        {/* Cookie Consent Banner */}
+        <CookieConsentBanner
+          consentGiven={cookieConsent}
+          onAccept={handleCookieAccept}
+          onDecline={handleCookieDecline}
+          onDismiss={handleCookieDismiss}
+        />
+      </div>
+    </AdSenseProvider>
   );
 }
