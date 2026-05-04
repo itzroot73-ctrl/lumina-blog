@@ -1,30 +1,13 @@
 [build]
-  command = """
-    prisma generate &&
-    next build
-  """
+  command = "prisma generate && next build"
   publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--legacy-peer-deps"
-  NEXT_PRIVATE_STANDALONE_CONFIG = "true"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# API routes and serverless functions
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/nextjs/:splat"
-  status = 200
-
-# SPA fallback for client-side routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  conditions = {Role = ["admin"]}
 
 # Static assets caching
 [[headers]]
